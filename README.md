@@ -1,2 +1,2 @@
 # triple-shield-architecture
- Hybrid Post-Quantum Cryptographic Framework
+ Hybrid Post-Quantum Cryptographic Prototype
