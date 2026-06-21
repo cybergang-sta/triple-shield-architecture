@@ -1,2 +1,2 @@
-# triple-shield-architecture
- Hybrid Post-Quantum Cryptographic Prototype
+# Triple Shield Architecture (3SA)
+## Hybrid Quantum-Safe Cryptographic Framework with Crypto Agility
