@@ -1,4 +1,4 @@
-# Triple-Shield Architecture (3SA): Hybrid PQC Handshake
+# Triple-Shield Architecture (3SA)
 
 A demonstration of a **hybrid post-quantum cryptography (PQC) handshake** combining classical elliptic-curve cryptography (X25519) with post-quantum key encapsulation (ML-KEM-768), fused using HKDF for a unified session key.
 
