@@ -1,0 +1,71 @@
+{
+  "version": "1.0",
+  "default_suite": "TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256",
+  "fallback_order": [
+    "TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256",
+    "TLS_X25519_ML_KEM_1024_WITH_AES_256_GCM_SHA3_256",
+    "TLS_X25519_WITH_AES_256_GCM_SHA3_256"
+  ],
+  "cipher_suites": {
+    "TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256": {
+      "name": "X25519 + ML-KEM-768 + AES-256-GCM",
+      "kem": "ML-KEM-768",
+      "classical_kem": "X25519",
+      "aead": "AES-256-GCM",
+      "kdf": "HKDF-SHA3-256",
+      "kdf_salt": "hybrid-pqc-v1-fusion",
+      "security_level": "post_quantum_level_3",
+      "description": "Primary hybrid suite: classical ECDH fused with NIST PQ lattice-based KEM",
+      "anomaly_threshold": 0.6
+    },
+    "TLS_X25519_ML_KEM_1024_WITH_AES_256_GCM_SHA3_256": {
+      "name": "X25519 + ML-KEM-1024 + AES-256-GCM",
+      "kem": "ML-KEM-1024",
+      "classical_kem": "X25519",
+      "aead": "AES-256-GCM",
+      "kdf": "HKDF-SHA3-256",
+      "kdf_salt": "hybrid-pqc-v1-fusion",
+      "security_level": "post_quantum_level_5",
+      "description": "Higher-security hybrid suite: upgraded to ML-KEM-1024 for enhanced PQ strength",
+      "anomaly_threshold": 0.5
+    },
+    "TLS_X25519_WITH_AES_256_GCM_SHA3_256": {
+      "name": "X25519 + AES-256-GCM (Classical Fallback)",
+      "kem": null,
+      "classical_kem": "X25519",
+      "aead": "AES-256-GCM",
+      "kdf": "HKDF-SHA3-256",
+      "kdf_salt": "classical-fallback-v1",
+      "security_level": "classical_level_256",
+      "description": "Classical-only fallback for compatibility or post-quantum migration periods",
+      "anomaly_threshold": 0.7
+    }
+  },
+  "agility_rules": {
+    "high_anomaly_score": {
+      "trigger": "anomaly_score > threshold",
+      "action": "transition_to_next_suite",
+      "preserve_session": true,
+      "log_event": true
+    },
+    "repeated_failure": {
+      "trigger": "consecutive_failed_handshakes >= 3",
+      "action": "transition_to_fallback",
+      "preserve_session": false,
+      "log_event": true
+    },
+    "resource_exhaustion": {
+      "trigger": "handshake_latency > 50ms",
+      "action": "downgrade_to_classical",
+      "preserve_session": true,
+      "log_event": true
+    }
+  },
+  "default_kem": "ML-KEM-768",
+  "fallback_kems": [
+    "ML-KEM-768",
+    "KYBER512",
+    "KYBER768",
+    "KYBER1024"
+  ]
+}

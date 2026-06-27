@@ -1,0 +1,100 @@
+# Triple Shield Architecture: Hybrid Quantum-Safe Cryptographic Framework
+**Author:** Sulemana Wunnam Yussif  
+**Project Type:** Senior Capstone / Undergraduate Thesis  
+**Status:** In Progress (Implementation & Test Validation Phase)  
+**Timeline:** August 2025 – [Expected Completion Date]  
+
+---
+
+## 📜 Reporting Context & Status Declaration
+This document serves as a mid-cycle progress report aligned with university capstone guidelines. **Formal evaluation results, performance benchmarks, and AI detection metrics are not yet available**, as the project is currently in the active implementation and test-preparation phase. All success criteria, validation protocols, and measurement pipelines have been pre-defined and are staged for execution. Empirical results will be documented in the final capstone submission upon completion of the simulation and stress-testing phase.
+
+---
+
+## 1. Project Objective
+Evaluate the implementation security and operational robustness of hybrid quantum-safe key exchange mechanisms by integrating NIST-standardized ML-KEM-768 with classical X25519, augmented by AI-driven anomaly detection for implementation-level threat monitoring and cryptographic agility.
+
+---
+
+## 2. Core Architecture
+1. **Hybrid Key Exchange**  
+   - Combines `X25519` (classical ECDH) + `ML-KEM-768` (NIST lattice-based KEM)  
+   - Implemented via `liboqs` Python bindings (`oqs` library) and `cryptography` package  
+   - Ensures backward compatibility and quantum-resistant forward secrecy  
+
+2. **Secret Fusion & Key Derivation**  
+   - Classical + PQ shared secrets concatenated and processed through `HKDF-SHA3-256`  
+   - Outputs a unified 32-byte session key ready for `AES-GCM` or `ChaCha20-Poly1305`  
+   - Cryptographically sound domain separation via `info=b"hybrid-pqc-v1-fusion"`  
+
+3. **AI-Driven Anomaly Monitoring**  
+   - `scikit-learn` models trained on handshake metadata (timing, packet size, success/failure rates)  
+   - Flags deviations indicative of implementation flaws, resource exhaustion, or synthetic side-channel patterns  
+   - Designed as a lightweight, pluggable analysis layer for secure SDLC integration  
+
+4. **Cryptographic Agility**  
+   - Upon detection of anomalous handshake patterns, the framework automatically transitions to a stronger or alternative configuration and initiates session re-negotiation with updated parameters on the subsequent connection attempt.
+
+---
+
+## 3. Technical Implementation
+| Component | Tool/Library | Role |
+|-----------|--------------|------|
+| PQC Handshake | `oqs`, `cryptography` | Key generation, encapsulation/decapsulation |
+| Key Derivation | `HKDF-SHA3-256` | Secure fusion of classical + PQ secrets |
+| AI Monitoring | `scikit-learn`, `pandas`, `NumPy` | Feature extraction, anomaly classification |
+| Validation Harness | End-to-end simulation script | Key match verification, latency profiling, metric logging |
+
+---
+
+## 4. Verification Framework & Current Status
+*Aligned with standard capstone evaluation rubrics emphasizing methodological rigor, traceability, and reproducible validation.*
+
+### ✅ Completed Infrastructure
+- Hybrid key exchange module (X25519 + ML-KEM-768) implemented and unit-tested
+- HKDF-SHA3-256 key derivation pipeline with domain separation validated
+- AI anomaly detection feature extraction pipeline operational on synthetic metadata
+- End-to-end simulation harness with automated logging and metric collection fully staged
+
+### 📋 Defined Validation Metrics & Success Criteria
+| Metric Category | Specific Measure | Target Threshold | Validation Method |
+|----------------|----------------|------------------|------------------|
+| Functional Correctness | Key agreement success rate | ≥99.9% over 1,000 handshakes | Deterministic simulation + cross-library validation |
+| Performance Overhead | Handshake latency vs. X25519-only baseline | ≤20% increase | Profiling via `time` + packet capture analysis |
+| AI Detection Efficacy | Precision/Recall on timing anomalies | ≥85% F1-score | Cross-validation on synthetically perturbed datasets |
+| Crypto-Agility Response | Session recovery after anomaly trigger | 100% successful re-negotiation | Fault-injection testing + state-machine verification |
+
+### ⚠️ Technical Risks & Mitigation Strategies
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| `liboqs` Python binding instability under high-load simulation | Moderate | Containerized test environment with strict version pinning; fallback to C API if throughput degrades |
+| Synthetic anomaly data may not reflect real-world side-channel patterns | High | Document limitations explicitly; prioritize methodology transparency; plan for future hardware-in-the-loop validation |
+| Scope creep from AI model optimization | Moderate | Freeze model architecture at current proof-of-concept stage; defer hyperparameter tuning to post-capstone work |
+
+---
+
+## 5. Requirements Traceability Matrix
+*Demonstrates alignment between project objectives, design components, and verification methods per capstone reporting standards.*
+
+| Req. ID | Requirement Type | Source | Verification Method | Status |
+|---------|----------------|--------|---------------------|--------|
+| FR-01 | Functional | Sec 2.1 | Key agreement validation (deterministic) | Implemented, pending execution |
+| PR-01 | Performance | Sec 2.1 | Latency profiling vs. classical baseline | Metric defined, tooling ready |
+| ER-01 | Security | Sec 2.2–2.4 | Domain separation + crypto-agility trigger test | Implemented, pending stress test |
+| AI-01 | Analytical | Sec 2.3 | F1-score validation on synthetic metadata | Feature pipeline operational, training pending |
+
+---
+
+## 6. Execution Roadmap & Deliverable Timeline
+| Milestone | Target Date | Deliverable |
+|-----------|-------------|-------------|
+| Stress-testing environment finalization | [Month, Year] | Containerized simulation harness + logging pipeline |
+| Baseline performance profiling runs | [Month, Year] | Latency/throughput dataset vs. X25519 |
+| AI model training & cross-validation | [Month, Year] | Classifier weights, confusion matrix, F1 metrics |
+| Final comparative analysis drafting | [Month, Year] | Chapter 4: Results & Discussion |
+| Capstone submission & defense | [Month, Year] | Final report, reproducible codebase, presentation |
+
+---
+
+## 7. Research Alignment
+This prototype bridges empirical software security, cryptographic implementation analysis, and AI-assisted vulnerability detection. It directly complements academic work in LLM-driven code analysis, automated vulnerability patching, and large-scale security dataset generation (e.g., APPATCH, VGX), providing a concrete, reproducible testbed for evaluating AI-augmented security in next-generation software systems.
