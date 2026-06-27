@@ -99,7 +99,7 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
         return HKDF(
             algorithm=hashes.SHA3_256(),
             length=32,
-            salt=b"hybrid-pqc-handshake-v1",  # Fixed salt for security/domain separation
+            salt=b"hybrid-pqc-v1-fusion",  # Fixed salt for security/domain separation
             info=b"session-key-derivation",
         ).derive(classic_sec + pq_sec)
 

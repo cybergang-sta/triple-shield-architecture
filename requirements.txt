@@ -2,3 +2,4 @@ cryptography
 scikit-learn
 pandas
 numpy
+liboqs
