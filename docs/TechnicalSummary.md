@@ -1,12 +1,12 @@
-# Triple Shield Architecture: Hybrid Quantum-Safe Cryptographic Framework
+# Triple-Shield Architecture (3SA): A Multi-layered Hybrid Quantum-Safe Cryptographic Framework with Crypto Agility
 **Author:** Sulemana Wunnam Yussif  
-**Project Type:** Senior Capstone / Undergraduate Thesis  
-**Status:** In Progress (Implementation & Test Validation Phase)  
-**Timeline:** August 2025 – [Expected Completion Date]  
+**Project Type:** Senior Capstone   
+**Status:** Implementation and Test Validation Phase
+**Timeline:** January 2026 – August 2026  
 
 ---
 
-## 📜 Reporting Context & Status Declaration
+## Reporting Context & Status Declaration
 This document serves as a mid-cycle progress report aligned with university capstone guidelines. **Formal evaluation results, performance benchmarks, and AI detection metrics are not yet available**, as the project is currently in the active implementation and test-preparation phase. All success criteria, validation protocols, and measurement pipelines have been pre-defined and are staged for execution. Empirical results will be documented in the final capstone submission upon completion of the simulation and stress-testing phase.
 
 ---
@@ -50,13 +50,13 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 ## 4. Verification Framework & Current Status
 *Aligned with standard capstone evaluation rubrics emphasizing methodological rigor, traceability, and reproducible validation.*
 
-### ✅ Completed Infrastructure
+### Completed Infrastructure
 - Hybrid key exchange module (X25519 + ML-KEM-768) implemented and unit-tested
 - HKDF-SHA3-256 key derivation pipeline with domain separation validated
 - AI anomaly detection feature extraction pipeline operational on synthetic metadata
 - End-to-end simulation harness with automated logging and metric collection fully staged
 
-### 📋 Defined Validation Metrics & Success Criteria
+### Defined Validation Metrics & Success Criteria
 | Metric Category | Specific Measure | Target Threshold | Validation Method |
 |----------------|----------------|------------------|------------------|
 | Functional Correctness | Key agreement success rate | ≥99.9% over 1,000 handshakes | Deterministic simulation + cross-library validation |
@@ -64,7 +64,7 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 | AI Detection Efficacy | Precision/Recall on timing anomalies | ≥85% F1-score | Cross-validation on synthetically perturbed datasets |
 | Crypto-Agility Response | Session recovery after anomaly trigger | 100% successful re-negotiation | Fault-injection testing + state-machine verification |
 
-### ⚠️ Technical Risks & Mitigation Strategies
+### Technical Risks & Mitigation Strategies
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | `liboqs` Python binding instability under high-load simulation | Moderate | Containerized test environment with strict version pinning; fallback to C API if throughput degrades |

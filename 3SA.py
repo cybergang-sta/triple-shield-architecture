@@ -100,7 +100,7 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
             algorithm=hashes.SHA3_256(),
             length=32,
             salt=b"hybrid-pqc-v1-fusion",  # Fixed salt for security/domain separation
-            info=b"session-key-derivation",
+            info=b"hybrid-pqc-v1-fusion",  # Domain separation context matching spec
         ).derive(classic_sec + pq_sec)
 
     alice_final_key = derive_final_key(alice_shared_classic, alice_shared_pq)

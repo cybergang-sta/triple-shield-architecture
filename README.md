@@ -1,4 +1,5 @@
-# Triple-Shield Architecture (3SA)
+
+# Triple-Shield Architecture (3SA): A Multi-layered Hybrid Quantum-Safe Cryptographic Framework with Crypto Agility
 
 A demonstration of a **hybrid post-quantum cryptography (PQC) handshake** combining classical elliptic-curve cryptography (X25519) with post-quantum key encapsulation (ML-KEM-768), fused using HKDF for a unified session key.
 
