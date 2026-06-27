@@ -143,7 +143,7 @@ Check the [Open Quantum Safe project](https://openquantumsafe.org/) for pre-buil
 
 ## Security Notes
 
-⚠️ **This is a demonstration, not production-ready code:**
+**This is a demonstration, not production-ready code:**
 - The fallback KEM mock is deterministic and insecure.
 - No authentication or signatures are used.
 - Session keys are not persisted or used for encryption in this demo.
