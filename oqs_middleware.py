@@ -66,13 +66,33 @@ class _MockKEM:
     def __init__(self, algorithm: str):
         self.algorithm = algorithm
         self._priv = os.urandom(32)
+        # Generate realistic sizes based on algorithm for testing suite-aware detection
+        if "1024" in algorithm:
+            self._pk_size = 1568  # ML-KEM-1024 public key size
+            self._ct_size = 1568  # ML-KEM-1024 ciphertext size
+        elif "768" in algorithm:
+            self._pk_size = 1184  # ML-KEM-768 public key size
+            self._ct_size = 1088  # ML-KEM-768 ciphertext size
+        else:
+            self._pk_size = 32  # Classical fallback
+            self._ct_size = 32
+        # Generate deterministic public key of correct size
         self._pub = hashlib.sha3_256(self._priv).digest()
+        # Extend to required size by repeating the hash
+        while len(self._pub) < self._pk_size:
+            self._pub += hashlib.sha3_256(self._pub).digest()
+        self._pub = self._pub[:self._pk_size]
 
     def generate_keypair(self) -> bytes:
+        # Return deterministic realistic-sized public key for testing
         return self._pub
 
     def encapsulate(self, peer_public: bytes) -> Tuple[bytes, bytes]:
-        ephemeral = os.urandom(32)
+        # Generate deterministic ciphertext of correct size
+        ephemeral = hashlib.sha3_256(peer_public + self._priv).digest()
+        while len(ephemeral) < self._ct_size:
+            ephemeral += hashlib.sha3_256(ephemeral).digest()
+        ephemeral = ephemeral[:self._ct_size]
         shared = hashlib.sha3_256(peer_public + ephemeral).digest()
         return ephemeral, shared
 

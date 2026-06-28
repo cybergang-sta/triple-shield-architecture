@@ -16,7 +16,15 @@
       "kdf_salt": "hybrid-pqc-v1-fusion",
       "security_level": "post_quantum_level_3",
       "description": "Primary hybrid suite: classical ECDH fused with NIST PQ lattice-based KEM",
-      "anomaly_threshold": 0.6
+      "anomaly_threshold": 0.6,
+      "expected_overhead": {
+        "ciphertext_size_min": 1000,
+        "ciphertext_size_max": 1200,
+        "public_key_size_min": 1100,
+        "public_key_size_max": 1300,
+        "latency_ms_min": 10.0,
+        "latency_ms_max": 100.0
+      }
     },
     "TLS_X25519_ML_KEM_1024_WITH_AES_256_GCM_SHA3_256": {
       "name": "X25519 + ML-KEM-1024 + AES-256-GCM",
@@ -27,7 +35,15 @@
       "kdf_salt": "hybrid-pqc-v1-fusion",
       "security_level": "post_quantum_level_5",
       "description": "Higher-security hybrid suite: upgraded to ML-KEM-1024 for enhanced PQ strength",
-      "anomaly_threshold": 0.5
+      "anomaly_threshold": 0.5,
+      "expected_overhead": {
+        "ciphertext_size_min": 1500,
+        "ciphertext_size_max": 1700,
+        "public_key_size_min": 1500,
+        "public_key_size_max": 1700,
+        "latency_ms_min": 10.0,
+        "latency_ms_max": 100.0
+      }
     },
     "TLS_X25519_WITH_AES_256_GCM_SHA3_256": {
       "name": "X25519 + AES-256-GCM (Classical Fallback)",
@@ -38,7 +54,15 @@
       "kdf_salt": "classical-fallback-v1",
       "security_level": "classical_level_256",
       "description": "Classical-only fallback for compatibility or post-quantum migration periods",
-      "anomaly_threshold": 0.7
+      "anomaly_threshold": 0.7,
+      "expected_overhead": {
+        "ciphertext_size_min": 0,
+        "ciphertext_size_max": 100,
+        "public_key_size_min": 32,
+        "public_key_size_max": 32,
+        "latency_ms_min": 0.5,
+        "latency_ms_max": 3.0
+      }
     }
   },
   "agility_rules": {

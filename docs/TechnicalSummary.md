@@ -27,13 +27,16 @@ Evaluate the implementation security and operational robustness of hybrid quantu
    - Outputs a unified 32-byte session key ready for `AES-GCM` or `ChaCha20-Poly1305`  
    - Cryptographically sound domain separation via `info=b"hybrid-pqc-v1-fusion"`  
 
-3. **AI-Driven Anomaly Monitoring**  
-   - `scikit-learn` models trained on handshake metadata (timing, packet size, success/failure rates)  
-   - Flags deviations indicative of implementation flaws, resource exhaustion, or synthetic side-channel patterns  
-   - Designed as a lightweight, pluggable analysis layer for secure SDLC integration  
+3. **AI-Driven Anomaly Monitoring**
+   - `scikit-learn` models trained on handshake metadata (timing, packet size, success/failure rates)
+   - Flags deviations indicative of implementation flaws, resource exhaustion, or synthetic side-channel patterns
+   - Designed as a lightweight, pluggable analysis layer for secure SDLC integration
+   - Suite-aware scoring with 50% anomaly reduction when metrics are within expected overhead ranges per cipher suite
 
-4. **Cryptographic Agility**  
-   - Upon detection of anomalous handshake patterns, the framework automatically transitions to a stronger or alternative configuration and initiates session re-negotiation with updated parameters on the subsequent connection attempt.
+4. **Cryptographic Agility**
+   - Upon detection of anomalous handshake patterns, the framework automatically transitions to a stronger or alternative configuration and initiates session re-negotiation with updated parameters on the subsequent connection attempt
+   - Transition cooldown mechanism (3 handshakes) prevents rapid renegotiation loops
+   - Expected overhead ranges defined per cipher suite to prevent false positives from natural PQC overhead
 
 ---
 
@@ -54,6 +57,8 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 - Hybrid key exchange module (X25519 + ML-KEM-768) implemented and unit-tested
 - HKDF-SHA3-256 key derivation pipeline with domain separation validated
 - AI anomaly detection feature extraction pipeline operational on synthetic metadata
+- Suite-aware scoring with overhead range validation per cipher suite
+- Transition cooldown mechanism to prevent renegotiation loops
 - End-to-end simulation harness with automated logging and metric collection fully staged
 
 ### Defined Validation Metrics & Success Criteria

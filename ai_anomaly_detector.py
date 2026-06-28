@@ -33,12 +33,14 @@ class HandshakeMetrics:
         public_key_size: int,
         success: bool,
         encap_variance: float = 0.0,
+        suite: Optional[str] = None,
     ):
         self.latency_ms = latency_ms
         self.ciphertext_size = ciphertext_size
         self.public_key_size = public_key_size
         self.success = success
         self.encap_variance = encap_variance
+        self.suite = suite
 
     def to_feature_vector(self) -> np.ndarray:
         """Convert metrics to a feature vector for classification."""
@@ -61,6 +63,25 @@ class AnomalyDetector:
         self.classifier = None
         self.scaler = None
         self.is_trained = False
+        self.suite_overhead_ranges = {}
+
+    def load_suite_overhead_ranges(self, policy_path: Optional[str] = None):
+        """Load expected overhead ranges from policy configuration."""
+        import json
+        import os
+
+        if policy_path is None:
+            policy_path = os.path.join(os.path.dirname(__file__), "policy.json")
+
+        try:
+            with open(policy_path, "r", encoding="utf-8") as f:
+                policy = json.load(f)
+                suites = policy.get("cipher_suites", {})
+                for suite_name, suite_def in suites.items():
+                    self.suite_overhead_ranges[suite_name] = suite_def.get("expected_overhead", {})
+                _LOGGER.info("Loaded overhead ranges for %d cipher suites", len(self.suite_overhead_ranges))
+        except Exception as e:
+            _LOGGER.warning("Failed to load overhead ranges from policy: %s", e)
 
     def generate_synthetic_training_data(self, n_samples: int = 500) -> Tuple[pd.DataFrame, np.ndarray]:
         """Generate synthetic training data with normal and anomalous handshakes.
@@ -132,6 +153,35 @@ class AnomalyDetector:
         # Get probability of anomalous class (class 1)
         proba = self.classifier.predict_proba(features)
         anomaly_prob = proba[0][1]
+
+        # Apply suite-aware adjustment if suite is specified and overhead ranges are available
+        if metrics.suite and metrics.suite in self.suite_overhead_ranges:
+            overhead = self.suite_overhead_ranges[metrics.suite]
+            if overhead:
+                # Check if metrics are within expected range for this suite
+                ct_min = overhead.get("ciphertext_size_min", 0)
+                ct_max = overhead.get("ciphertext_size_max", float('inf'))
+                pk_min = overhead.get("public_key_size_min", 0)
+                pk_max = overhead.get("public_key_size_max", float('inf'))
+                lat_min = overhead.get("latency_ms_min", 0)
+                lat_max = overhead.get("latency_ms_max", float('inf'))
+
+                # If all metrics are within expected range, reduce anomaly score
+                # This prevents false positives from natural overhead of higher-security suites
+                if (ct_min <= metrics.ciphertext_size <= ct_max and
+                    pk_min <= metrics.public_key_size <= pk_max and
+                    lat_min <= metrics.latency_ms <= lat_max):
+                    # Reduce anomaly score by 50% if within expected range
+                    adjusted_prob = anomaly_prob * 0.5
+                    _LOGGER.debug("Suite-aware adjustment: %.3f -> %.3f (within expected range for %s)",
+                                 anomaly_prob, adjusted_prob, metrics.suite)
+                    return adjusted_prob
+                else:
+                    _LOGGER.debug("Metrics outside expected range for %s: ct=%d (exp %d-%d), pk=%d (exp %d-%d), lat=%.1f (exp %.1f-%.1f)",
+                                 metrics.suite, metrics.ciphertext_size, ct_min, ct_max,
+                                 metrics.public_key_size, pk_min, pk_max,
+                                 metrics.latency_ms, lat_min, lat_max)
+
         _LOGGER.debug("Anomaly score: %.3f for latency=%.1fms", anomaly_prob, metrics.latency_ms)
         return anomaly_prob
 

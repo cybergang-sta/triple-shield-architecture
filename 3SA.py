@@ -13,13 +13,11 @@ import binascii
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Hybrid PQC handshake demo")
-    parser.add_argument(
-        "--kem",
+    parser.add_argument(     "--kem",
         default="ML-KEM-768",
         help="KEM algorithm to use (default: ML-KEM-768)",
     )
-    parser.add_argument(
-        "--client-proposals",
+    parser.add_argument(     "--client-proposals",
         default=None,
         help="Comma-separated client-preferred KEM algorithms for negotiation",
     )
@@ -51,9 +49,13 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     controller = get_controller()
     if not detector.is_trained:
         initialize_detector()
+    # Load suite overhead ranges for suite-aware anomaly detection
+    detector.load_suite_overhead_ranges()
     
     # Create session in agility controller
-    session = controller.create_session(session_id, initial_suite=f"TLS_X25519_{kem_algorithm}_WITH_AES_256_GCM_SHA3_256")
+    # Convert kem algorithm name to match policy.json format (ML-KEM-768 -> ML_KEM_768)
+    kem_policy_name = kem_algorithm.replace("-", "_")
+    session = controller.create_session(session_id, initial_suite=f"TLS_X25519_{kem_policy_name}_WITH_AES_256_GCM_SHA3_256")
 
     # Measure handshake latency
     start_time = time.perf_counter()
@@ -124,6 +126,7 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
         public_key_size=len(alice_pub_pq),
         success=success,
         encap_variance=0.0,
+        suite=session.current_suite,
     )
     anomaly_score = detector.score(metrics)
     print(f"\n[AI Monitor] Anomaly Score: {anomaly_score:.3f}")

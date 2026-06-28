@@ -37,6 +37,8 @@ class SessionState:
         self.failed_handshakes = 0
         self.max_anomaly_score = 0.0
         self.agility_events = []
+        self.last_transition_handshake = -1
+        self.transition_cooldown = 3
 
     def record_handshake(self, success: bool, anomaly_score: float):
         """Record a handshake attempt."""
@@ -58,6 +60,7 @@ class SessionState:
         )
         self.previous_suite = old_suite
         self.current_suite = new_suite
+        self.last_transition_handshake = self.handshake_count
 
     def to_dict(self) -> Dict:
         """Serialize session state."""
@@ -128,6 +131,13 @@ class AgilityController:
 
         # Record the handshake
         session.record_handshake(success, anomaly_score)
+
+        # Check cooldown period to prevent rapid renegotiation loops
+        handshakes_since_transition = session.handshake_count - session.last_transition_handshake
+        if handshakes_since_transition < session.transition_cooldown:
+            _LOGGER.debug("Cooldown active: %d handshakes since last transition (min %d)",
+                         handshakes_since_transition, session.transition_cooldown)
+            return AgilityEvent.NONE, None
 
         # Evaluate rules
         suite_def = self.get_suite_definition(session.current_suite)
