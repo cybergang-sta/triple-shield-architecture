@@ -1,5 +1,5 @@
 # Triple-Shield Architecture (3SA): A Multi-layered Hybrid Quantum-Safe Cryptographic Framework with Crypto Agility
-**Author:** Sulemana Wunnam Yussif  
+**Name:** Sulemana Wunnam Yussif  
 **Project Type:** Senior Capstone   
 **Status:** Implementation and Test Validation Phase
 **Timeline:** January 2026 – August 2026  
@@ -86,6 +86,8 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 | FR-01 | Functional | Sec 2.1 | Key agreement validation (deterministic) | Implemented, pending execution |
 | PR-01 | Performance | Sec 2.1 | Latency profiling vs. classical baseline | Metric defined, tooling ready |
 | ER-01 | Security | Sec 2.2–2.4 | Domain separation + crypto-agility trigger test | Implemented, pending stress test |
+| ER-06 | Security | Sec 2.3 | Suite-aware scoring with 50% reduction | Implemented and tested |
+| ER-07 | Security | Sec 2.4 | 3-handshake transition cooldown | Implemented and tested |
 | AI-01 | Analytical | Sec 2.3 | F1-score validation on synthetic metadata | Feature pipeline operational, training pending |
 
 ---
