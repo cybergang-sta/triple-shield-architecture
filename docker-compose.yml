@@ -66,6 +66,23 @@ services:
     networks:
       - 3sa-network
 
+  # Network emulation service (requires CAP_NET_ADMIN)
+  network-emulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 3sa:latest
+    container_name: 3sa-network-emulator
+    cap_add:
+      - NET_ADMIN
+    network_mode: host
+    privileged: true
+    volumes:
+      - ./scripts:/home/app/3sa/scripts:ro
+    command: ["tail", "-f", "/dev/null"]
+    networks:
+      - 3sa-network
+
 networks:
   3sa-network:
     driver: bridge

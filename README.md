@@ -210,6 +210,91 @@ The docker-compose.yml includes multiple services for testing different configur
 
 ---
 
+## Network Emulation for Stress Testing
+
+### Overview
+
+The 3SA framework supports real-world network emulation using Linux tc netem (Traffic Control) within Docker containers. This leverages WSL 2 on Windows to provide native Linux network emulation capabilities without requiring Windows-specific tools.
+
+### Literature-Based Parameters
+
+Based on empirical studies of post-quantum cryptography validation:
+- **WAN Latency**: 40ms Round-Trip Time (RTT)
+- **Jitter**: ±5ms (normal distribution)
+- **Purpose**: Validate AI anomaly detector can differentiate between side-channel attacks and natural network jitter
+
+### Prerequisites
+
+- Docker Desktop with WSL 2 backend (default on Windows)
+- Docker Compose
+- Network emulator service requires CAP_NET_ADMIN privileges
+
+### Using Network Emulation
+
+#### Start the network emulator service:
+```bash
+docker-compose up -d network-emulator
+```
+
+#### Apply WAN emulation (40ms RTT, ±5ms jitter):
+```bash
+docker exec -it 3sa-network-emulator sudo /home/app/3sa/scripts/setup_network_emulation.sh
+```
+
+#### Run 3SA with network emulation:
+```bash
+docker-compose up 3sa
+```
+
+#### Remove network emulation:
+```bash
+docker exec -it 3sa-network-emulator sudo /home/app/3sa/scripts/cleanup_network_emulation.sh
+```
+
+#### Stop network emulator:
+```bash
+docker-compose down network-emulator
+```
+
+### Manual Network Emulation
+
+If you prefer to run network emulation manually inside a container:
+
+```bash
+# Start a container with network capabilities
+docker run --rm --cap-add=NET_ADMIN --privileged --network host 3sa:latest
+
+# Inside the container, apply emulation
+sudo tc qdisc add dev eth0 root netem delay 40ms 5ms distribution normal
+
+# Run your tests
+python3 3SA.py --kem ML-KEM-768
+
+# Clean up
+sudo tc qdisc del dev eth0 root
+```
+
+### Verification
+
+To verify network emulation is active:
+```bash
+docker exec -it 3sa-network-emulator tc qdisc show dev eth0
+```
+
+Expected output:
+```
+qdisc netem 1: root refcnt 2 limit 1000 delay 40ms 5ms
+```
+
+### Benefits of Network Emulation
+
+- **Realistic Testing**: Validates AI detector under WAN conditions
+- **Side-Channel Detection**: Ensures cryptographic processing time isolation from network latency
+- **Literature Alignment**: Uses exact parameters from PQC validation studies
+- **WSL 2 Integration**: Native Linux networking on Windows without additional tools
+
+---
+
 ## Code Changes Made
 
 1. **Serialization fix**: X25519 public key export now uses `public_bytes(encoding=..., format=...)` instead of the non-existent `public_bytes_raw()`.

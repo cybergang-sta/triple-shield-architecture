@@ -114,9 +114,21 @@ The Triple Shield Architecture capstone project has been successfully integrated
 
 **Implementation**:
 - **Benchmark Methodology**: 50 iterations each for X25519-only and hybrid configurations
-- **Timing**: High-resolution perf_counter() measurements in milliseconds
+- **High-Resolution Logging**: Uses `time.perf_counter_ns()` for nanosecond precision
+- **Operation-Level Timing**: Isolated timing for ML-KEM encapsulation, decapsulation, and HKDF-SHA3-256
+- **Exact Size Validation**: Records exact byte sizes (ML-KEM-768: 1184/1088 bytes, ML-KEM-1024: 1568/1568 bytes)
+- **OQS_ERROR Tracking**: Field for implicit rejection failure codes
+- **JSON Export**: Detailed per-iteration logs exported for analysis
 - **Metrics**: Mean, std dev, min, max, p50, p95 latencies
 - **Comparison**: Overhead calculation: ((hybrid_mean - classical_mean) / classical_mean) * 100%
+
+**Test Environment**:
+- **Containerization**: Docker with Ubuntu 22.04 LTS for isolated testing
+- **Network Emulation**: Linux tc netem for WAN conditions (via WSL 2 on Windows)
+- **WAN Parameters** (literature-based):
+  - Round-Trip Time: 40ms
+  - Jitter: ±5ms (normal distribution)
+  - Purpose: Validate AI detector can differentiate side-channel attacks from natural network jitter
 
 **Validation Results** (Mock KEM - Expected with real oqs):
 
