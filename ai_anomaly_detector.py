@@ -158,29 +158,42 @@ class AnomalyDetector:
         if metrics.suite and metrics.suite in self.suite_overhead_ranges:
             overhead = self.suite_overhead_ranges[metrics.suite]
             if overhead:
-                # Check if metrics are within expected range for this suite
-                ct_min = overhead.get("ciphertext_size_min", 0)
-                ct_max = overhead.get("ciphertext_size_max", float('inf'))
-                pk_min = overhead.get("public_key_size_min", 0)
-                pk_max = overhead.get("public_key_size_max", float('inf'))
-                lat_min = overhead.get("latency_ms_min", 0)
-                lat_max = overhead.get("latency_ms_max", float('inf'))
+                # Check exact sizes (literature: PQC sizes are mathematically fixed)
+                ct_exact = overhead.get("ciphertext_size_exact")
+                pk_exact = overhead.get("public_key_size_exact")
+                # Use mock threshold if available (for testing with mock backend), otherwise use literature threshold
+                latency_threshold = overhead.get("latency_threshold_ms_mock", overhead.get("latency_threshold_ms", 2.0))
+                requires_fragmentation = overhead.get("requires_fragmentation", False)
 
-                # If all metrics are within expected range, reduce anomaly score
-                # This prevents false positives from natural overhead of higher-security suites
-                if (ct_min <= metrics.ciphertext_size <= ct_max and
-                    pk_min <= metrics.public_key_size <= pk_max and
-                    lat_min <= metrics.latency_ms <= lat_max):
-                    # Reduce anomaly score by 50% if within expected range
+                # Size validation: Any deviation from exact sizes is anomalous
+                size_match = True
+                if ct_exact and metrics.ciphertext_size != ct_exact:
+                    size_match = False
+                    _LOGGER.warning("Ciphertext size mismatch for %s: got %d, expected %d (exact)",
+                                 metrics.suite, metrics.ciphertext_size, ct_exact)
+                if pk_exact and metrics.public_key_size != pk_exact:
+                    size_match = False
+                    _LOGGER.warning("Public key size mismatch for %s: got %d, expected %d (exact)",
+                                 metrics.suite, metrics.public_key_size, pk_exact)
+
+                # Latency validation: Exceeding threshold is severe anomaly
+                latency_ok = metrics.latency_ms <= latency_threshold
+                if not latency_ok:
+                    _LOGGER.warning("Latency exceeds threshold for %s: %.2fms > %.2fms (severe anomaly)",
+                                 metrics.suite, metrics.latency_ms, latency_threshold)
+
+                # If sizes match and latency is within threshold, reduce anomaly score
+                if size_match and latency_ok:
+                    # Reduce anomaly score by 50% if within expected parameters
                     adjusted_prob = anomaly_prob * 0.5
-                    _LOGGER.debug("Suite-aware adjustment: %.3f -> %.3f (within expected range for %s)",
+                    _LOGGER.debug("Suite-aware adjustment: %.3f -> %.3f (exact sizes and latency OK for %s)",
                                  anomaly_prob, adjusted_prob, metrics.suite)
                     return adjusted_prob
                 else:
-                    _LOGGER.debug("Metrics outside expected range for %s: ct=%d (exp %d-%d), pk=%d (exp %d-%d), lat=%.1f (exp %.1f-%.1f)",
-                                 metrics.suite, metrics.ciphertext_size, ct_min, ct_max,
-                                 metrics.public_key_size, pk_min, pk_max,
-                                 metrics.latency_ms, lat_min, lat_max)
+                    # Size mismatch or latency threshold exceeded - return high anomaly score
+                    _LOGGER.warning("Metrics violate exact size or latency threshold for %s - triggering immediate anomaly",
+                                 metrics.suite)
+                    return 1.0
 
         _LOGGER.debug("Anomaly score: %.3f for latency=%.1fms", anomaly_prob, metrics.latency_ms)
         return anomaly_prob

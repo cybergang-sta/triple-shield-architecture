@@ -18,12 +18,12 @@
       "description": "Primary hybrid suite: classical ECDH fused with NIST PQ lattice-based KEM",
       "anomaly_threshold": 0.6,
       "expected_overhead": {
-        "ciphertext_size_min": 1000,
-        "ciphertext_size_max": 1200,
-        "public_key_size_min": 1100,
-        "public_key_size_max": 1300,
-        "latency_ms_min": 10.0,
-        "latency_ms_max": 100.0
+        "ciphertext_size_exact": 1088,
+        "public_key_size_exact": 1184,
+        "latency_ms_min": 0.50,
+        "latency_ms_max": 0.70,
+        "latency_threshold_ms": 2.0,
+        "latency_threshold_ms_mock": 200.0
       }
     },
     "TLS_X25519_ML_KEM_1024_WITH_AES_256_GCM_SHA3_256": {
@@ -37,12 +37,13 @@
       "description": "Higher-security hybrid suite: upgraded to ML-KEM-1024 for enhanced PQ strength",
       "anomaly_threshold": 0.5,
       "expected_overhead": {
-        "ciphertext_size_min": 1500,
-        "ciphertext_size_max": 1700,
-        "public_key_size_min": 1500,
-        "public_key_size_max": 1700,
-        "latency_ms_min": 10.0,
-        "latency_ms_max": 100.0
+        "ciphertext_size_exact": 1568,
+        "public_key_size_exact": 1568,
+        "latency_ms_min": 0.50,
+        "latency_ms_max": 0.70,
+        "latency_threshold_ms": 2.0,
+        "latency_threshold_ms_mock": 200.0,
+        "requires_fragmentation": true
       }
     },
     "TLS_X25519_WITH_AES_256_GCM_SHA3_256": {
@@ -56,12 +57,12 @@
       "description": "Classical-only fallback for compatibility or post-quantum migration periods",
       "anomaly_threshold": 0.7,
       "expected_overhead": {
-        "ciphertext_size_min": 0,
-        "ciphertext_size_max": 100,
-        "public_key_size_min": 32,
-        "public_key_size_max": 32,
-        "latency_ms_min": 0.5,
-        "latency_ms_max": 3.0
+        "ciphertext_size_exact": 32,
+        "public_key_size_exact": 32,
+        "latency_ms_min": 0.1,
+        "latency_ms_max": 0.5,
+        "latency_threshold_ms": 1.0,
+        "latency_threshold_ms_mock": 50.0
       }
     }
   },

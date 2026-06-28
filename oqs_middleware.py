@@ -66,17 +66,17 @@ class _MockKEM:
     def __init__(self, algorithm: str):
         self.algorithm = algorithm
         self._priv = os.urandom(32)
-        # Generate realistic sizes based on algorithm for testing suite-aware detection
+        # Generate exact sizes based on literature specifications
         if "1024" in algorithm:
-            self._pk_size = 1568  # ML-KEM-1024 public key size
-            self._ct_size = 1568  # ML-KEM-1024 ciphertext size
+            self._pk_size = 1568  # ML-KEM-1024: exact 1568 bytes (public key)
+            self._ct_size = 1568  # ML-KEM-1024: exact 1568 bytes (ciphertext)
         elif "768" in algorithm:
-            self._pk_size = 1184  # ML-KEM-768 public key size
-            self._ct_size = 1088  # ML-KEM-768 ciphertext size
+            self._pk_size = 1184  # ML-KEM-768: exact 1184 bytes (public key)
+            self._ct_size = 1088  # ML-KEM-768: exact 1088 bytes (ciphertext)
         else:
-            self._pk_size = 32  # Classical fallback
-            self._ct_size = 32
-        # Generate deterministic public key of correct size
+            self._pk_size = 32  # Classical X25519: exact 32 bytes
+            self._ct_size = 32  # Classical fallback
+        # Generate deterministic public key of exact size
         self._pub = hashlib.sha3_256(self._priv).digest()
         # Extend to required size by repeating the hash
         while len(self._pub) < self._pk_size:
