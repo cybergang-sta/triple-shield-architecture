@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Main 3SA application service
+  3sa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 3sa:latest
+    container_name: 3sa-app
+    environment:
+      - THREE_SA_LOG=INFO
+    volumes:
+      - ./docs:/home/app/3sa/docs:ro
+      - ./policy.json:/home/app/3sa/policy.json:ro
+    command: ["python3", "3SA.py", "--kem", "ML-KEM-768"]
+    networks:
+      - 3sa-network
+
+  # Benchmark service for performance testing
+  benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 3sa:latest
+    container_name: 3sa-benchmark
+    environment:
+      - THREE_SA_LOG=INFO
+    volumes:
+      - ./docs:/home/app/3sa/docs:ro
+      - ./policy.json:/home/app/3sa/policy.json:ro
+      - ./benchmark_results:/home/app/3sa/benchmark_results
+    command: ["python3", "benchmark.py"]
+    networks:
+      - 3sa-network
+
+  # ML-KEM-1024 variant service
+  3sa-1024:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 3sa:latest
+    container_name: 3sa-app-1024
+    environment:
+      - THREE_SA_LOG=INFO
+    volumes:
+      - ./docs:/home/app/3sa/docs:ro
+      - ./policy.json:/home/app/3sa/policy.json:ro
+    command: ["python3", "3SA.py", "--kem", "ML-KEM-1024"]
+    networks:
+      - 3sa-network
+
+  # Classical fallback service
+  3sa-classical:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 3sa:latest
+    container_name: 3sa-app-classical
+    environment:
+      - THREE_SA_LOG=INFO
+    volumes:
+      - ./docs:/home/app/3sa/docs:ro
+      - ./policy.json:/home/app/3sa/policy.json:ro
+    command: ["python3", "3SA.py", "--kem", "X25519"]
+    networks:
+      - 3sa-network
+
+networks:
+  3sa-network:
+    driver: bridge
+
+volumes:
+  benchmark_results:

@@ -134,6 +134,82 @@ Check the [Open Quantum Safe project](https://openquantumsafe.org/) for pre-buil
 
 ---
 
+## Docker Deployment
+
+### Prerequisites
+- Docker Desktop installed on your system
+- Docker Compose (included with Docker Desktop)
+
+### Build and Run with Docker
+
+#### Build the Docker image:
+```bash
+docker build -t 3sa:latest .
+```
+
+#### Run the main application:
+```bash
+docker run --rm 3sa:latest
+```
+
+#### Run with specific KEM algorithm:
+```bash
+docker run --rm 3sa:latest python3 3SA.py --kem ML-KEM-1024
+```
+
+#### Run with environment variables:
+```bash
+docker run --rm -e THREE_SA_LOG=DEBUG 3sa:latest
+```
+
+### Using Docker Compose
+
+#### Start all services:
+```bash
+docker-compose up
+```
+
+#### Start specific service:
+```bash
+docker-compose up 3sa
+docker-compose up benchmark
+docker-compose up 3sa-1024
+docker-compose up 3sa-classical
+```
+
+#### Run in detached mode:
+```bash
+docker-compose up -d
+```
+
+#### View logs:
+```bash
+docker-compose logs -f
+```
+
+#### Stop all services:
+```bash
+docker-compose down
+```
+
+### Docker Services
+
+The docker-compose.yml includes multiple services for testing different configurations:
+
+- **3sa**: Main service with ML-KEM-768 (default)
+- **benchmark**: Performance benchmarking service
+- **3sa-1024**: ML-KEM-1024 variant
+- **3sa-classical**: Classical X25519 fallback
+
+### Benefits of Containerization
+
+- **Isolated Environment**: Eliminates background system noise for accurate latency measurements
+- **Reproducible Results**: Consistent Python environment and dependencies
+- **Easy Deployment**: Single command to run the entire stack
+- **Scalability**: Easy to run multiple instances for load testing
+
+---
+
 ## Code Changes Made
 
 1. **Serialization fix**: X25519 public key export now uses `public_bytes(encoding=..., format=...)` instead of the non-existent `public_bytes_raw()`.
