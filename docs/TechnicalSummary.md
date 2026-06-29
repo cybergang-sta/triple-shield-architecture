@@ -92,7 +92,7 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 | ER-01 | Security | Sec 2.2–2.4 | Domain separation + crypto-agility trigger test | Implemented, pending stress test |
 | ER-06 | Security | Sec 2.3 | Suite-aware scoring with 50% reduction | Implemented and tested |
 | ER-07 | Security | Sec 2.4 | 3-handshake transition cooldown | Implemented and tested |
-| AI-01 | Analytical | Sec 2.3 | F1-score validation on synthetic metadata | Dataset generated (478 samples), F1=0.958 achieved |
+| AI-01 | Analytical | Sec 2.3 | F1-score validation on synthetic metadata | Dataset generated (478 samples), F1=0.936 achieved, confusion matrix generated |
 
 ---
 
