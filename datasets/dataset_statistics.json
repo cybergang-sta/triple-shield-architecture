@@ -1,0 +1,54 @@
+{
+  "total_samples": 478,
+  "normal_samples": 348,
+  "anomalous_samples": 130,
+  "class_balance": {
+    "normal": 0.7280334728033473,
+    "anomalous": 0.2719665271966527
+  },
+  "by_suite": {
+    "ML-KEM-1024": {
+      "count": 181,
+      "normal": 116,
+      "anomalous": 65,
+      "mean_latency_ms": 2.725247267164362,
+      "std_latency_ms": 6.1082892852300485
+    },
+    "ML-KEM-768": {
+      "count": 181,
+      "normal": 116,
+      "anomalous": 65,
+      "mean_latency_ms": 2.847085697908043,
+      "std_latency_ms": 6.411703533009273
+    },
+    "Classical": {
+      "count": 116,
+      "normal": 116,
+      "anomalous": 0,
+      "mean_latency_ms": 0.3017936469301801,
+      "std_latency_ms": 0.06494659641480807
+    }
+  },
+  "by_anomaly_type": {
+    "implicit_rejection": {
+      "count": 30,
+      "mean_latency_ms": 0.5973883486202087
+    },
+    "normal": {
+      "count": 348,
+      "mean_latency_ms": 0.5028217758662957
+    },
+    "ciphertext_tampering": {
+      "count": 30,
+      "mean_latency_ms": 0.6079087774963888
+    },
+    "public_key_tampering": {
+      "count": 30,
+      "mean_latency_ms": 0.603634860693105
+    },
+    "timing_moderate": {
+      "count": 40,
+      "mean_latency_ms": 20.358759802906107
+    }
+  }
+}
