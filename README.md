@@ -295,6 +295,75 @@ qdisc netem 1: root refcnt 2 limit 1000 delay 40ms 5ms
 
 ---
 
+## Dataset Generation for AI Anomaly Detector
+
+### Overview
+
+The 3SA framework includes a high-resolution dataset generation script for training the AI anomaly detector. The script generates synthetic handshake data based on literature parameters for post-quantum cryptography validation.
+
+### Literature-Based Parameters
+
+The dataset generation uses exact byte sizes and timing parameters from PQC literature:
+- **ML-KEM-768**: 1184 bytes public key, 1088 bytes ciphertext, 0.5-0.7ms latency
+- **ML-KEM-1024**: 1568 bytes public key, 1568 bytes ciphertext, 0.5-0.7ms latency
+- **Classical**: 32 bytes public key, 32 bytes ciphertext, 0.1-0.5ms latency
+
+### Generating the Dataset
+
+#### Run the dataset generation script:
+```bash
+python generate_dataset.py
+```
+
+This will create:
+- `datasets/handshake_dataset.csv` - Training data with labels
+- `datasets/dataset_statistics.json` - Dataset statistics
+
+### Dataset Composition
+
+The generated dataset includes:
+- **Normal handshakes** (72.8%): Within expected size and latency parameters
+- **Timing anomalies**: Latency exceeding literature thresholds (side-channel attacks)
+- **Size anomalies**: Ciphertext or public key tampering
+- **Implicit rejections**: Silent failures from ciphertext manipulation
+
+### Training the AI Anomaly Detector
+
+#### Train with the generated dataset:
+```python
+from ai_anomaly_detector import AnomalyDetector
+
+detector = AnomalyDetector()
+detector.load_suite_overhead_ranges()
+detector.train(csv_path="datasets/handshake_dataset.csv")
+```
+
+#### Test the trained detector:
+```bash
+python test_dataset_training.py
+```
+
+### Dataset Features
+
+Each sample includes:
+- `latency_ms` - Handshake latency in milliseconds
+- `latency_ns` - Handshake latency in nanoseconds (high-resolution)
+- `ciphertext_size` - Ciphertext size in bytes
+- `public_key_size` - Public key size in bytes
+- `success` - Boolean indicating handshake success
+- `encap_variance` - Encapsulation time variance
+- `label` - 0 for normal, 1 for anomalous
+- `anomaly_type` - Type of anomaly (normal, timing_moderate, ciphertext_tampering, etc.)
+
+### Benefits of High-Resolution Dataset
+
+- **Literature Alignment**: Uses exact sizes and timing from PQC validation studies
+- **Nanosecond Precision**: High-resolution timing for accurate anomaly detection
+- **Multiple Anomaly Types**: Covers timing attacks, size tampering, and implicit rejections
+- **Suite-Aware Training**: Includes data for ML-KEM-768, ML-KEM-1024, and classical suites
+
+---
+
 ## Code Changes Made
 
 1. **Serialization fix**: X25519 public key export now uses `public_bytes(encoding=..., format=...)` instead of the non-existent `public_bytes_raw()`.

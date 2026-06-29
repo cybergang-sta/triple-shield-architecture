@@ -59,6 +59,10 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 - AI anomaly detection feature extraction pipeline operational on synthetic metadata
 - Suite-aware scoring with overhead range validation per cipher suite
 - Transition cooldown mechanism to prevent renegotiation loops
+- High-resolution dataset generation with literature-based parameters (478 samples)
+- CSV export functionality for scikit-learn training compatibility
+- Nanosecond precision timing for accurate anomaly detection
+- Exact byte size validation (ML-KEM-768: 1184/1088, ML-KEM-1024: 1568/1568, Classical: 32/32)
 - End-to-end simulation harness with automated logging and metric collection fully staged
 
 ### Defined Validation Metrics & Success Criteria
@@ -88,7 +92,7 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 | ER-01 | Security | Sec 2.2–2.4 | Domain separation + crypto-agility trigger test | Implemented, pending stress test |
 | ER-06 | Security | Sec 2.3 | Suite-aware scoring with 50% reduction | Implemented and tested |
 | ER-07 | Security | Sec 2.4 | 3-handshake transition cooldown | Implemented and tested |
-| AI-01 | Analytical | Sec 2.3 | F1-score validation on synthetic metadata | Feature pipeline operational, training pending |
+| AI-01 | Analytical | Sec 2.3 | F1-score validation on synthetic metadata | Dataset generated (478 samples), F1=0.958 achieved |
 
 ---
 

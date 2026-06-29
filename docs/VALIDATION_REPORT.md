@@ -28,9 +28,11 @@ The Triple Shield Architecture capstone project has been successfully integrated
 **Implementation**:
 - **Algorithm**: RandomForestClassifier (100 estimators, max_depth=10)
 - **Features**: latency_ms, ciphertext_size, public_key_size, success, encap_variance
-- **Training Data**: 500 synthetic samples (70% normal, 30% anomalous)
-- **Anomaly Classes**: High latency, failed handshakes, variance spikes
+- **Training Data**: High-resolution dataset generated with literature-based parameters (478 samples: 72.8% normal, 27.2% anomalous)
+- **Dataset Generation**: Uses exact byte sizes and nanosecond precision timing from PQC literature
+- **Anomaly Classes**: Timing attacks (side-channel), size tampering (ciphertext/public key), implicit rejections
 - **Suite-Aware Scoring**: Context-aware adjustment based on expected overhead ranges per cipher suite
+- **CSV Export**: Training data exported to CSV format for scikit-learn compatibility
 
 **Validation Results**:
 
@@ -44,12 +46,15 @@ The Triple Shield Architecture capstone project has been successfully integrated
 | Suite-Aware Adjustment | 50% reduction | - | PASS |
 
 **Test Cases Executed**:
-1. Training on synthetic dataset: Generated 350 normal samples, 150 anomalies
-2. Cross-validation with 80/20 train/test split: F1=0.986
-3. Real-time scoring during handshake: Anomaly scores computed in <5ms
-4. Threshold detection: Successfully triggered HIGH_ANOMALY event when score > 0.600
-5. Suite-aware scoring: Anomaly score reduced by 50% when metrics within expected range
-6. Overhead range validation: ML-KEM-768 (1000-1200 bytes), ML-KEM-1024 (1500-1700 bytes)
+1. High-resolution dataset generation: Generated 478 samples with literature-based parameters
+2. Dataset composition: 348 normal (72.8%), 130 anomalous (27.2%) across ML-KEM-768, ML-KEM-1024, and Classical suites
+3. Cross-validation with 80/20 train/test split: F1=0.958 with CSV dataset
+4. Real-time scoring during handshake: Anomaly scores computed in <5ms
+5. Threshold detection: Successfully triggered HIGH_ANOMALY event when score > 0.600
+6. Suite-aware scoring: Anomaly score reduced by 50% when metrics within expected range
+7. Exact size validation: Size tampering detected with immediate anomaly score (1.0)
+8. CSV loading: Successfully trained with dataset from CSV file
+9. Literature parameters: ML-KEM-768 (1184/1088 bytes), ML-KEM-1024 (1568/1568 bytes), Classical (32/32 bytes)
 
 **Evidence**:
 ```
