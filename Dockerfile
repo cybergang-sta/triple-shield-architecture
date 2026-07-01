@@ -9,8 +9,8 @@ ENV PATH="/home/app/.local/bin:${PATH}"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    python3.13 \
-    python3.13-venv \
+    python3 \
+    python3-venv \
     python3-pip \
     git \
     iproute2 \

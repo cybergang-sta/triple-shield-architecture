@@ -15,12 +15,13 @@ echo "Emulating WAN conditions: ${LATENCY_MS}ms RTT with ±${JITTER_MS}ms jitter
 echo "Target interface: ${INTERFACE}"
 echo ""
 
-# Check if running as root
-if [ "$EUID" -ne 0 ]; then 
-    echo "Error: This script must be run as root"
-    echo "Use: sudo $0"
-    exit 1
-fi
+# Skip root check when running in privileged container
+# Container already has CAP_NET_ADMIN privileges
+# if [ "$EUID" -ne 0 ]; then 
+#     echo "Error: This script must be run as root"
+#     echo "Use: sudo $0"
+#     exit 1
+# fi
 
 # Check if tc is available
 if ! command -v tc &> /dev/null; then

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Main 3SA application service
   3sa:
@@ -63,23 +61,6 @@ services:
       - ./docs:/home/app/3sa/docs:ro
       - ./policy.json:/home/app/3sa/policy.json:ro
     command: ["python3", "3SA.py", "--kem", "X25519"]
-    networks:
-      - 3sa-network
-
-  # Network emulation service (requires CAP_NET_ADMIN)
-  network-emulator:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: 3sa:latest
-    container_name: 3sa-network-emulator
-    cap_add:
-      - NET_ADMIN
-    network_mode: host
-    privileged: true
-    volumes:
-      - ./scripts:/home/app/3sa/scripts:ro
-    command: ["tail", "-f", "/dev/null"]
     networks:
       - 3sa-network
 

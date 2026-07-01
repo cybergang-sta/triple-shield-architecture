@@ -231,14 +231,16 @@ Based on empirical studies of post-quantum cryptography validation:
 
 ### Using Network Emulation
 
-#### Start the network emulator service:
+#### Apply WAN emulation on WSL 2 host (recommended for Windows):
 ```bash
-docker-compose up -d network-emulator
-```
+# Open WSL 2 terminal
+wsl
 
-#### Apply WAN emulation (40ms RTT, ±5ms jitter):
-```bash
-docker exec -it 3sa-network-emulator sudo /home/app/3sa/scripts/setup_network_emulation.sh
+# Apply 40ms RTT with ±5ms jitter
+sudo tc qdisc add dev eth0 root netem delay 40ms 5ms distribution normal
+
+# Verify emulation
+tc qdisc show dev eth0
 ```
 
 #### Run 3SA with network emulation:
@@ -248,12 +250,7 @@ docker-compose up 3sa
 
 #### Remove network emulation:
 ```bash
-docker exec -it 3sa-network-emulator sudo /home/app/3sa/scripts/cleanup_network_emulation.sh
-```
-
-#### Stop network emulator:
-```bash
-docker-compose down network-emulator
+sudo tc qdisc del dev eth0 root
 ```
 
 ### Manual Network Emulation
