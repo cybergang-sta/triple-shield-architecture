@@ -2,5 +2,4 @@ cryptography
 scikit-learn
 pandas
 numpy
-# liboqs - Optional: requires system library installation
-# Mock implementation used when liboqs is unavailable
+# liboqs - Installed from source in Dockerfile

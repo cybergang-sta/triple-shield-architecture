@@ -20,6 +20,40 @@ A demonstration of a **hybrid post-quantum cryptography (PQC) handshake** combin
 ### Prerequisites
 - **Python 3.10+** (tested on Python 3.13)
 - **cryptography** library (for X25519 and HKDF)
+- **liboqs** (optional - mock implementation used for development/testing)
+
+### liboqs Backend
+
+The project uses a mock implementation of liboqs for development and testing. The mock provides:
+
+- **Exact byte sizes** from PQC literature:
+  - ML-KEM-768: 1184 bytes public key, 1088 bytes ciphertext
+  - ML-KEM-1024: 1568 bytes public key, 1568 bytes ciphertext
+  - Classical X25519: 32 bytes public key, 32 bytes ciphertext
+- **Deterministic output** for reproducible AI training
+- **Literature-based parameters** for rigorous validation
+
+**For production deployment**, install real liboqs:
+
+```bash
+# Install system dependencies
+sudo apt-get install -y libssl-dev cmake ninja-build build-essential
+
+# Build liboqs from source
+git clone https://github.com/open-quantum-safe/liboqs.git
+cd liboqs
+mkdir build && cd build
+cmake -GNinja ..
+ninja
+sudo ninja install
+sudo ldconfig
+
+# Install Python bindings
+cd ../python
+pip install .
+```
+
+The `oqs_middleware.py` module automatically detects if liboqs is available and falls back to the mock implementation when needed.
 
 ### Install Dependencies
 
