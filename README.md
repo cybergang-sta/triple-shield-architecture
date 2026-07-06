@@ -90,6 +90,7 @@ python 3SA.py --list-kems
 python 3SA.py --kem ML-KEM-768
 python 3SA.py --force-real
 python 3SA.py --kem KYBER512 --force-real
+python 3SA.py --web-dashboard  # Enable real-time metrics to web dashboard
 ```
 
 Use `--list-kems` to see available oqs algorithms. By default, the wrapper falls back to the mock backend when `oqs` is not installed. Use `--force-real` to require the real `oqs` backend.
@@ -165,6 +166,45 @@ docker run -it openquantumsafe/liboqs:latest
 
 ### Option C: Pre-built Binaries
 Check the [Open Quantum Safe project](https://openquantumsafe.org/) for pre-built Windows binaries.
+
+---
+
+## Real-time Web Dashboard
+
+The project includes a React-based real-time dashboard for visualizing the 3SA process.
+
+### Features
+
+- **Real-time Metrics**: Live updates of handshake latency, key sizes, and anomaly scores
+- **Throughput Visualization**: Line charts showing handshake throughput over time
+- **Overhead Comparison**: Bar charts comparing key sizes across cipher suites
+- **Process Flow**: Visual representation of handshake steps with timing
+- **Anomaly Alerts**: Real-time alerts when anomalies are detected
+
+### Quick Start
+
+1. **Start the WebSocket server**:
+```bash
+python web_server.py
+```
+
+2. **Start the React dashboard** (in a separate terminal):
+```bash
+cd web
+npm install
+npm start
+```
+
+3. **Run 3SA with dashboard integration**:
+```bash
+python 3SA.py --kem ML-KEM-768 --web-dashboard
+```
+
+The dashboard will be available at `http://localhost:3000`
+
+### Detailed Setup
+
+See [web/README.md](web/README.md) for complete setup instructions, customization options, and troubleshooting.
 
 ---
 

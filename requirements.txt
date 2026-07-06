@@ -3,3 +3,7 @@ scikit-learn
 pandas
 numpy
 # liboqs - Installed from source in Dockerfile
+# Web dashboard dependencies
+flask
+flask-socketio
+requests

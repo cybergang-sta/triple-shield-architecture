@@ -1,0 +1,45 @@
+.anomaly-alert {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.alert-icon {
+  font-size: 2rem;
+}
+
+.alert-content h3 {
+  margin: 0 0 8px 0;
+  color: #dc2626;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.alert-score {
+  margin: 0 0 4px 0;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.alert-type {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}

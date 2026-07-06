@@ -10,6 +10,23 @@ from oqs_middleware import create_kem, oqs_available, supported_kems
 from ai_anomaly_detector import get_detector, initialize_detector, HandshakeMetrics
 from agility_controller import get_controller, initialize_controller, AgilityEvent
 import binascii
+import requests
+
+def broadcast_metrics(metrics_data, anomaly_score, suite):
+    """Broadcast metrics to web dashboard if available"""
+    try:
+        response = requests.post(
+            'http://localhost:5000/api/metrics',
+            json={
+                **metrics_data,
+                'anomaly_score': anomaly_score,
+                'suite': suite
+            },
+            timeout=0.1
+        )
+    except (requests.exceptions.RequestException, Exception):
+        # Silently fail if web server is not running
+        pass
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Hybrid PQC handshake demo")
@@ -31,9 +48,14 @@ def parse_args():
         action="store_true",
         help="List enabled oqs KEM algorithms and exit",
     )
+    parser.add_argument(
+        "--web-dashboard",
+        action="store_true",
+        help="Enable real-time metrics broadcasting to web dashboard",
+    )
     return parser.parse_args()
 
-def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, session_id: str = "default"):
+def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, session_id: str = "default", web_dashboard: bool = False):
     """Execute hybrid PQC handshake with anomaly detection and agility.
     
     Args:
@@ -131,6 +153,17 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     anomaly_score = detector.score(metrics)
     print(f"\n[AI Monitor] Anomaly Score: {anomaly_score:.3f}")
 
+    # Broadcast metrics to web dashboard if enabled
+    if web_dashboard:
+        metrics_data = {
+            'total_latency_ms': elapsed_ms,
+            'ciphertext_size_bytes': len(ciphertext),
+            'public_key_size_bytes': len(alice_pub_pq),
+            'success': success,
+            'encap_variance': 0.0,
+        }
+        broadcast_metrics(metrics_data, anomaly_score, session.current_suite)
+
     # 6. CRYPTOGRAPHIC AGILITY EVALUATION
     event, new_suite = controller.evaluate_agility(session_id, anomaly_score, success)
     if event != AgilityEvent.NONE and new_suite:
@@ -174,7 +207,7 @@ if __name__ == "__main__":
             exit(1)
 
     try:
-        hybrid_fusion_handshake(chosen_kem, force_real=args.force_real)
+        hybrid_fusion_handshake(chosen_kem, force_real=args.force_real, web_dashboard=args.web_dashboard)
     except RuntimeError as exc:
         print(f"Error: {exc}")
         exit(1)
