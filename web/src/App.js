@@ -8,6 +8,8 @@ const socket = io('http://localhost:5000');
 function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [metrics, setMetrics] = useState(null);
+  const [agilityEvent, setAgilityEvent] = useState(null);
+  const [agilityHistory, setAgilityHistory] = useState([]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -24,10 +26,16 @@ function App() {
       setMetrics(data);
     });
 
+    socket.on('agility_event', (data) => {
+      setAgilityEvent(data);
+      setAgilityHistory(prev => [data, ...prev].slice(0, 10)); // Keep last 10 events
+    });
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
       socket.off('metrics_update');
+      socket.off('agility_event');
     };
   }, []);
 
@@ -41,7 +49,12 @@ function App() {
         </div>
       </header>
       <main>
-        <Dashboard metrics={metrics} isConnected={isConnected} />
+        <Dashboard 
+          metrics={metrics} 
+          isConnected={isConnected} 
+          agilityEvent={agilityEvent}
+          agilityHistory={agilityHistory}
+        />
       </main>
     </div>
   );

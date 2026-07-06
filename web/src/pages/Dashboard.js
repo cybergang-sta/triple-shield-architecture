@@ -4,8 +4,10 @@ import ThroughputChart from '../components/ThroughputChart';
 import OverheadChart from '../components/OverheadChart';
 import HandshakeProcess from '../components/HandshakeProcess';
 import AnomalyAlert from '../components/AnomalyAlert';
+import SuiteStatus from '../components/SuiteStatus';
+import AgilityEvents from '../components/AgilityEvents';
 
-function Dashboard({ metrics, isConnected }) {
+function Dashboard({ metrics, isConnected, agilityEvent, agilityHistory }) {
   if (!metrics) {
     return (
       <div className="dashboard-container">
@@ -43,8 +45,14 @@ function Dashboard({ metrics, isConnected }) {
         />
       </div>
 
+      <SuiteStatus suite={metrics.suite} />
+
       {metrics.anomaly_score > 0.6 && (
         <AnomalyAlert score={metrics.anomaly_score} type={metrics.anomaly_type} />
+      )}
+
+      {agilityEvent && (
+        <AgilityEvents currentEvent={agilityEvent} history={agilityHistory} />
       )}
 
       <div className="charts-section">

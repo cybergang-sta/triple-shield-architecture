@@ -171,6 +171,25 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
         print(f"[Agility] Transitioning from {session.current_suite} to {new_suite}")
         controller.transition_suite(session_id, session.current_suite, new_suite, event)
         print(f"[Agility] Session re-negotiation queued for next connection")
+        
+        # Broadcast agility event to dashboard
+        if web_dashboard:
+            agility_data = {
+                'event_type': 'agility_transition',
+                'trigger_event': event.value,
+                'old_suite': session.current_suite,
+                'new_suite': new_suite,
+                'anomaly_score': anomaly_score,
+                'timestamp': time.time()
+            }
+            try:
+                requests.post(
+                    'http://localhost:5000/api/agility',
+                    json=agility_data,
+                    timeout=0.1
+                )
+            except (requests.exceptions.RequestException, Exception):
+                pass
     
     # Log session state
     final_state = controller.get_session_state(session_id)

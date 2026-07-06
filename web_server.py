@@ -42,6 +42,18 @@ def handle_metrics():
     else:
         return jsonify({'metrics': list(metrics_history)})
 
+@app.route('/api/agility', methods=['POST'])
+def handle_agility():
+    """Handle agility events - POST for new agility transitions"""
+    try:
+        agility_data = request.json
+        agility_data['timestamp'] = datetime.now().isoformat()
+        socketio.emit('agility_event', agility_data)
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        _LOGGER.error(f"Error processing agility event: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 400
+
 @socketio.on('connect')
 def handle_connect():
     _LOGGER.info(f"Client connected: {request.sid}")

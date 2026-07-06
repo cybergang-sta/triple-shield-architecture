@@ -12,3 +12,38 @@
   color: #1f2937;
   font-weight: 600;
 }
+
+.custom-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.9rem;
+  min-width: 120px;
+}
+
+.legend-desc {
+  color: #6b7280;
+  font-size: 0.85rem;
+}

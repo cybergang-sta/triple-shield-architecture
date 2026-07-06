@@ -1,0 +1,136 @@
+.agility-events {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.events-title {
+  margin: 0 0 20px 0;
+  font-size: 1.2rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.current-event {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.event-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.event-icon {
+  font-size: 1.5rem;
+}
+
+.event-label {
+  font-weight: 600;
+  color: #92400e;
+  font-size: 0.95rem;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-key {
+  font-weight: 500;
+  color: #6b7280;
+  font-size: 0.85rem;
+  min-width: 80px;
+}
+
+.event-value {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.9rem;
+}
+
+.event-value.old-suite {
+  color: #dc2626;
+}
+
+.event-value.new-suite {
+  color: #059669;
+}
+
+.event-history {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 16px;
+}
+
+.history-title {
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.history-time {
+  color: #6b7280;
+  font-family: monospace;
+  min-width: 80px;
+}
+
+.history-trigger {
+  color: #4b5563;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.history-arrow {
+  color: #9ca3af;
+}
+
+.history-suite {
+  color: #1f2937;
+  font-weight: 600;
+  font-family: monospace;
+}
