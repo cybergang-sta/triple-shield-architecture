@@ -37,6 +37,7 @@ class SessionState:
         self.failed_handshakes = 0
         self.max_anomaly_score = 0.0
         self.agility_events = []
+        self.suite_history = []
         self.last_transition_handshake = -1
         self.transition_cooldown = 3
 
@@ -60,6 +61,7 @@ class SessionState:
         )
         self.previous_suite = old_suite
         self.current_suite = new_suite
+        self.suite_history = list(dict.fromkeys(self.suite_history + [old_suite, new_suite]))
         self.last_transition_handshake = self.handshake_count
 
     def to_dict(self) -> Dict:
@@ -146,7 +148,7 @@ class AgilityController:
         # Rule 1: High anomaly score
         if anomaly_score > threshold:
             _LOGGER.warning("High anomaly score (%.3f > %.3f) in session %s", anomaly_score, threshold, session_id)
-            new_suite = self._get_next_suite(session.current_suite)
+            new_suite = self._get_next_suite(session.current_suite, session)
             return AgilityEvent.HIGH_ANOMALY, new_suite
 
         # Rule 2: Repeated failures
@@ -158,16 +160,25 @@ class AgilityController:
 
         return AgilityEvent.NONE, None
 
-    def _get_next_suite(self, current_suite: str) -> Optional[str]:
-        """Get the next suite in fallback order after current_suite."""
+    def _get_next_suite(self, current_suite: str, session: Optional[SessionState] = None) -> Optional[str]:
+        """Get the next suite in fallback order after current_suite without reusing visited suites."""
         fallback = self.get_fallback_order()
+        if not fallback:
+            return None
+
+        visited = set(getattr(session, "suite_history", []) or [])
+        for suite in fallback:
+            if suite == current_suite or suite in visited:
+                continue
+            return suite
+
         try:
             idx = fallback.index(current_suite)
             if idx + 1 < len(fallback):
                 return fallback[idx + 1]
         except ValueError:
             pass
-        return fallback[0] if fallback else None
+        return fallback[0]
 
     def transition_suite(self, session_id: str, old_suite: str, new_suite: str, event: AgilityEvent):
         """Transition a session to a new suite."""

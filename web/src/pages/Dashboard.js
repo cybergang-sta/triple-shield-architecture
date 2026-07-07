@@ -6,16 +6,14 @@ import HandshakeProcess from '../components/HandshakeProcess';
 import AnomalyAlert from '../components/AnomalyAlert';
 import SuiteStatus from '../components/SuiteStatus';
 import AgilityEvents from '../components/AgilityEvents';
-import TestControlPanel from '../components/TestControlPanel';
 
 function Dashboard({ metrics, isConnected, agilityEvent, agilityHistory }) {
   if (!metrics) {
     return (
       <div className="dashboard-container">
-        <TestControlPanel />
         <div className="no-data">
           <h2>Waiting for metrics data...</h2>
-          <p>Start the 3SA process or use the Test Control Panel to inject synthetic data</p>
+          <p>Start the 3SA process to begin streaming live metrics.</p>
         </div>
       </div>
     );
@@ -23,8 +21,6 @@ function Dashboard({ metrics, isConnected, agilityEvent, agilityHistory }) {
 
   return (
     <div className="dashboard-container">
-      <TestControlPanel />
-      
       <div className="metrics-grid">
         <MetricsCard 
           title="Total Latency" 
@@ -49,11 +45,12 @@ function Dashboard({ metrics, isConnected, agilityEvent, agilityHistory }) {
         />
       </div>
 
-      <SuiteStatus suite={metrics.suite} />
-
-      {metrics.anomaly_score > 0.6 && (
+      <div className="status-grid">
+        <SuiteStatus suite={metrics.suite} />
         <AnomalyAlert score={metrics.anomaly_score} type={metrics.anomaly_type} />
-      )}
+      </div>
+
+      <HandshakeProcess metrics={metrics} />
 
       {agilityEvent && (
         <AgilityEvents currentEvent={agilityEvent} history={agilityHistory} />
@@ -63,8 +60,6 @@ function Dashboard({ metrics, isConnected, agilityEvent, agilityHistory }) {
         <ThroughputChart metrics={metrics} />
         <OverheadChart metrics={metrics} />
       </div>
-
-      <HandshakeProcess metrics={metrics} />
     </div>
   );
 }

@@ -126,7 +126,9 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     )
 
     alice_kem = create_kem(kem_algorithm, force_real=force_real)
+    alice_kem_keygen_start_ns = time.perf_counter_ns()
     alice_pub_pq = alice_kem.generate_keypair()
+    alice_kem_keygen_ns = time.perf_counter_ns() - alice_kem_keygen_start_ns
 
     print(f"[Client] Selected KEM: {alice_kem.info()}")
     print(f"[Client] Sent X25519 Public Key: {alice_pub_classic[:16].hex()}...")
@@ -143,7 +145,9 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     shared_classic = bob_priv_classic.exchange(peer_pub_alice)
 
     bob_kem = create_kem(kem_algorithm, force_real=force_real)
+    bob_encap_start_ns = time.perf_counter_ns()
     ciphertext, shared_pq = bob_kem.encapsulate(alice_pub_pq)
+    bob_encap_ns = time.perf_counter_ns() - bob_encap_start_ns
 
     print(f"[Server] Computed Classical Secret: {shared_classic[:16].hex()}...")
     print(f"[Server] Computed PQ Secret: {shared_pq[:16].hex()}...\n")
@@ -152,7 +156,9 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     alice_shared_classic = alice_priv_classic.exchange(
         x25519.X25519PublicKey.from_public_bytes(bob_pub_classic)
     )
+    alice_decap_start_ns = time.perf_counter_ns()
     alice_shared_pq = alice_kem.decapsulate(ciphertext)
+    alice_decap_ns = time.perf_counter_ns() - alice_decap_start_ns
 
     # 4. THE HYBRID FUSION (HKDF)
     def derive_final_key(classic_sec, pq_sec):
@@ -163,8 +169,10 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
             info=b"hybrid-pqc-v1-fusion",  # Domain separation context matching spec
         ).derive(classic_sec + pq_sec)
 
+    hkdf_start_ns = time.perf_counter_ns()
     alice_final_key = derive_final_key(alice_shared_classic, alice_shared_pq)
     bob_final_key = derive_final_key(shared_classic, shared_pq)
+    hkdf_ns = time.perf_counter_ns() - hkdf_start_ns
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000
 
@@ -198,6 +206,10 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
             'public_key_size_bytes': metrics.public_key_size,
             'success': metrics.success,
             'encap_variance': metrics.encap_variance,
+            'alice_kem_keygen_ns': alice_kem_keygen_ns,
+            'bob_encap_ns': bob_encap_ns,
+            'alice_decap_ns': alice_decap_ns,
+            'hkdf_ns': hkdf_ns,
         }
         broadcast_metrics(metrics_data, anomaly_score, session.current_suite)
 

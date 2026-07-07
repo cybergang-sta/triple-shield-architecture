@@ -6,7 +6,15 @@ function AgilityEvents({ currentEvent, history }) {
     return null;
   }
 
-  const timelineEvents = [currentEvent, ...(history || [])].filter(Boolean);
+  const timelineEvents = [currentEvent, ...(history || [])]
+    .filter(Boolean)
+    .filter((event, index, allEvents) => {
+      const eventKey = `${event?.timestamp || ''}-${event?.trigger_event || event?.event_type || event?.trigger || 'manual'}-${event?.old_suite || event?.from_suite || ''}-${event?.new_suite || event?.to_suite || ''}`;
+      return allEvents.findIndex((candidate) => {
+        const candidateKey = `${candidate?.timestamp || ''}-${candidate?.trigger_event || candidate?.event_type || candidate?.trigger || 'manual'}-${candidate?.old_suite || candidate?.from_suite || ''}-${candidate?.new_suite || candidate?.to_suite || ''}`;
+        return candidateKey === eventKey;
+      }) === index;
+    });
 
   const formatTime = (timestamp) => {
     if (!timestamp) {
@@ -57,7 +65,12 @@ function AgilityEvents({ currentEvent, history }) {
           const trigger = formatTrigger(event);
           const oldSuite = event?.old_suite || event?.from_suite || '—';
           const newSuite = event?.new_suite || event?.to_suite || '—';
-          const anomalyType = event?.anomaly_type || '—';
+          const anomalyType = event?.anomaly_type === 'resource_exhaustion'
+            ? 'Resource Exhaustion'
+            : (event?.anomaly_type || '—');
+          const sessionKeysPreserved = event?.session_keys_preserved ?? true;
+          const rekeyStrategy = event?.rekey_strategy || 'stateful_re_negotiation';
+          const statefulNote = event?.stateful_note || 'Session keys remain active until the next safe re-negotiation boundary.';
 
           return (
             <div key={`${trigger}-${index}`} className={`timeline-item ${index === 0 ? 'timeline-item-active' : ''}`}>
@@ -87,6 +100,14 @@ function AgilityEvents({ currentEvent, history }) {
                     <span className="timeline-key">Anomaly</span>
                     <span className="timeline-value">{anomalyType}</span>
                   </div>
+                </div>
+                <div className="timeline-stateful">
+                  <div className="timeline-stateful-title">Session Keys</div>
+                  <div className="timeline-stateful-text">
+                    {sessionKeysPreserved ? 'Maintained and preserved for the active session.' : 'Not preserved for this transition.'}
+                  </div>
+                  <div className="timeline-stateful-meta">Strategy: {rekeyStrategy}</div>
+                  <div className="timeline-stateful-meta">{statefulNote}</div>
                 </div>
               </div>
             </div>

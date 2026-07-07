@@ -6,6 +6,25 @@ import './App.css';
 
 const socket = io('http://localhost:5000');
 
+const fallbackSuites = [
+  'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256',
+  'TLS_X25519_ML_KEM_1024_WITH_AES_256_GCM_SHA3_256',
+  'TLS_X25519_WITH_AES_256_GCM_SHA3_256',
+];
+
+function getNextSuite(currentSuite) {
+  if (!currentSuite) {
+    return fallbackSuites[0];
+  }
+
+  const index = fallbackSuites.indexOf(currentSuite);
+  if (index === -1) {
+    return fallbackSuites[0];
+  }
+
+  return fallbackSuites[Math.min(index + 1, fallbackSuites.length - 1)];
+}
+
 function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [metrics, setMetrics] = useState(null);
@@ -22,10 +41,13 @@ function App() {
 
   const sendTestAgility = async () => {
     try {
+      const currentSuite = metrics?.suite || fallbackSuites[0];
+      const nextSuite = getNextSuite(currentSuite);
+
       await axios.post('/api/test/agility', {
         event_type: 'manual_override',
-        old_suite: metrics?.suite || 'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256',
-        new_suite: 'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256',
+        old_suite: currentSuite,
+        new_suite: nextSuite,
         anomaly_score: metrics?.anomaly_score || 0.05,
       });
     } catch (error) {
@@ -51,6 +73,11 @@ function App() {
     socket.on('agility_event', (data) => {
       setAgilityEvent(data);
       setAgilityHistory(prev => [data, ...prev].slice(0, 10)); // Keep last 10 events
+
+      const nextSuite = data?.new_suite || data?.to_suite;
+      if (nextSuite) {
+        setMetrics(prev => prev ? { ...prev, suite: nextSuite } : prev);
+      }
     });
 
     return () => {
@@ -64,6 +91,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <div className="header-spacer" />
         <h1>Triple-Shield Architecture Dashboard</h1>
         <div className="connection-status">
           <span className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}></span>
@@ -71,8 +99,9 @@ function App() {
         </div>
       </header>
       <main>
-        <section className="control-panel">
-          <h2>Manual Test Controls</h2>
+        <section className="control-panel" aria-label="Manual test controls">
+          <h2>Manual Trigger Panel</h2>
+          <p className="control-subtitle">For manual demo actions only</p>
           <div className="control-row">
             <button className="control-button" onClick={() => sendTestHandshake('normal')}>
               Normal Handshake
@@ -89,8 +118,6 @@ function App() {
             <button className="control-button" onClick={() => sendTestHandshake('repeated_failure')}>
               Repeated Failure
             </button>
-          </div>
-          <div className="control-row">
             <button className="control-button" onClick={sendTestAgility}>
               Emit Manual Agility Event
             </button>
