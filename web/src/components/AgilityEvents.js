@@ -6,57 +6,93 @@ function AgilityEvents({ currentEvent, history }) {
     return null;
   }
 
+  const timelineEvents = [currentEvent, ...(history || [])].filter(Boolean);
+
   const formatTime = (timestamp) => {
+    if (!timestamp) {
+      return '—';
+    }
     const date = new Date(timestamp);
-    return date.toLocaleTimeString();
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  };
+
+  const formatTrigger = (event) => {
+    return event?.trigger_event || event?.event_type || event?.trigger || 'manual';
+  };
+
+  const formatAnomaly = (event) => {
+    if (event?.anomaly_score == null) {
+      return 'n/a';
+    }
+    return event.anomaly_score.toFixed(3);
+  };
+
+  const formatBadge = (event) => {
+    const trigger = formatTrigger(event);
+    if (trigger === 'high_anomaly' || trigger === 'high_latency') {
+      return { label: 'Alert', className: 'badge-alert' };
+    }
+    if (trigger === 'repeated_failure' || trigger === 'failure') {
+      return { label: 'Failure', className: 'badge-failure' };
+    }
+    if (trigger === 'manual_override') {
+      return { label: 'Manual', className: 'badge-manual' };
+    }
+    return { label: 'Transition', className: 'badge-transition' };
   };
 
   return (
     <div className="agility-events">
-      <h3 className="events-title">Cryptographic Agility Events</h3>
-      
-      {currentEvent && (
-        <div className="current-event">
-          <div className="event-header">
-            <span className="event-icon">⚡</span>
-            <span className="event-label">Latest Transition</span>
-          </div>
-          <div className="event-details">
-            <div className="event-row">
-              <span className="event-key">Trigger:</span>
-              <span className="event-value">{currentEvent.trigger_event}</span>
-            </div>
-            <div className="event-row">
-              <span className="event-key">From:</span>
-              <span className="event-value old-suite">{currentEvent.old_suite}</span>
-            </div>
-            <div className="event-row">
-              <span className="event-key">To:</span>
-              <span className="event-value new-suite">{currentEvent.new_suite}</span>
-            </div>
-            <div className="event-row">
-              <span className="event-key">Anomaly Score:</span>
-              <span className="event-value">{currentEvent.anomaly_score?.toFixed(3)}</span>
-            </div>
-          </div>
+      <div className="events-header">
+        <div>
+          <h3 className="events-title">Cryptographic Agility Timeline</h3>
+          <p className="events-subtitle">Recent triggers, scores, and suite transitions</p>
         </div>
-      )}
+        <span className="events-count">{timelineEvents.length} events</span>
+      </div>
 
-      {history && history.length > 1 && (
-        <div className="event-history">
-          <h4 className="history-title">Recent Transitions</h4>
-          <div className="history-list">
-            {history.slice(1).map((event, index) => (
-              <div key={index} className="history-item">
-                <span className="history-time">{formatTime(event.timestamp)}</span>
-                <span className="history-trigger">{event.trigger_event}</span>
-                <span className="history-arrow">→</span>
-                <span className="history-suite">{event.new_suite}</span>
+      <div className="timeline">
+        {timelineEvents.map((event, index) => {
+          const badge = formatBadge(event);
+          const trigger = formatTrigger(event);
+          const oldSuite = event?.old_suite || event?.from_suite || '—';
+          const newSuite = event?.new_suite || event?.to_suite || '—';
+          const anomalyType = event?.anomaly_type || '—';
+
+          return (
+            <div key={`${trigger}-${index}`} className={`timeline-item ${index === 0 ? 'timeline-item-active' : ''}`}>
+              <div className="timeline-marker">
+                <span className={`timeline-dot ${badge.className}`}></span>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+              <div className="timeline-card">
+                <div className="timeline-card-header">
+                  <span className={`timeline-badge ${badge.className}`}>{badge.label}</span>
+                  <span className="timeline-time">{formatTime(event?.timestamp)}</span>
+                </div>
+                <div className="timeline-title">{trigger}</div>
+                <div className="timeline-grid">
+                  <div className="timeline-cell">
+                    <span className="timeline-key">From</span>
+                    <span className="timeline-value suite-from">{oldSuite}</span>
+                  </div>
+                  <div className="timeline-cell">
+                    <span className="timeline-key">To</span>
+                    <span className="timeline-value suite-to">{newSuite}</span>
+                  </div>
+                  <div className="timeline-cell">
+                    <span className="timeline-key">Score</span>
+                    <span className="timeline-value">{formatAnomaly(event)}</span>
+                  </div>
+                  <div className="timeline-cell">
+                    <span className="timeline-key">Anomaly</span>
+                    <span className="timeline-value">{anomalyType}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -11,44 +11,44 @@
       "count": 181,
       "normal": 116,
       "anomalous": 65,
-      "mean_latency_ms": 2.725247267164362,
-      "std_latency_ms": 6.1082892852300485
+      "mean_latency_ms": 2.745918854829972,
+      "std_latency_ms": 6.157918640775872
     },
     "ML-KEM-768": {
       "count": 181,
       "normal": 116,
       "anomalous": 65,
-      "mean_latency_ms": 2.847085697908043,
-      "std_latency_ms": 6.411703533009273
+      "mean_latency_ms": 2.781419816949257,
+      "std_latency_ms": 6.262014533513718
     },
     "Classical": {
       "count": 116,
       "normal": 116,
       "anomalous": 0,
-      "mean_latency_ms": 0.3017936469301801,
-      "std_latency_ms": 0.06494659641480807
+      "mean_latency_ms": 0.28519009835668774,
+      "std_latency_ms": 0.05944468545631696
     }
   },
   "by_anomaly_type": {
     "implicit_rejection": {
       "count": 30,
-      "mean_latency_ms": 0.5973883486202087
+      "mean_latency_ms": 0.6007264287499392
     },
     "normal": {
       "count": 348,
-      "mean_latency_ms": 0.5028217758662957
+      "mean_latency_ms": 0.49330442104848343
     },
     "ciphertext_tampering": {
       "count": 30,
-      "mean_latency_ms": 0.6079087774963888
+      "mean_latency_ms": 0.6051304142607046
     },
     "public_key_tampering": {
       "count": 30,
-      "mean_latency_ms": 0.603634860693105
+      "mean_latency_ms": 0.6016083312521748
     },
     "timing_moderate": {
       "count": 40,
-      "mean_latency_ms": 20.358759802906107
+      "mean_latency_ms": 20.190911431216488
     }
   }
 }

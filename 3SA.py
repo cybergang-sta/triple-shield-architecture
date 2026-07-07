@@ -2,6 +2,7 @@ import argparse
 import os
 import time
 import logging
+from typing import Optional
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import x25519
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -53,9 +54,44 @@ def parse_args():
         action="store_true",
         help="Enable real-time metrics broadcasting to web dashboard",
     )
+    parser.add_argument(
+        "--test-scenario",
+        choices=["normal", "high_latency", "size_mismatch", "failure", "repeated_failure"],
+        default=None,
+        help="Inject a synthetic anomaly scenario into the handshake for dashboard testing",
+    )
+    parser.add_argument(
+        "--session-id",
+        default="default",
+        help="Session identifier used for agility tracking and repeated-failure tests",
+    )
     return parser.parse_args()
 
-def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, session_id: str = "default", web_dashboard: bool = False):
+
+def apply_test_scenario(metrics: HandshakeMetrics, scenario: Optional[str] = None) -> HandshakeMetrics:
+    """Mutate handshake metrics to simulate a specific anomaly scenario."""
+    if not scenario or scenario == "normal":
+        return metrics
+
+    scenario = scenario.lower()
+    if scenario == "high_latency":
+        metrics.latency_ms = 18.5
+        metrics.success = True
+    elif scenario == "size_mismatch":
+        metrics.ciphertext_size = 1208
+        metrics.public_key_size = 1264
+        metrics.success = True
+    elif scenario == "failure":
+        metrics.latency_ms = 22.0
+        metrics.success = False
+    elif scenario == "repeated_failure":
+        metrics.latency_ms = 20.0
+        metrics.success = False
+
+    return metrics
+
+
+def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, session_id: str = "default", web_dashboard: bool = False, test_scenario: Optional[str] = None):
     """Execute hybrid PQC handshake with anomaly detection and agility.
     
     Args:
@@ -150,17 +186,18 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
         encap_variance=0.0,
         suite=session.current_suite,
     )
+    metrics = apply_test_scenario(metrics, test_scenario)
     anomaly_score = detector.score(metrics)
     print(f"\n[AI Monitor] Anomaly Score: {anomaly_score:.3f}")
 
     # Broadcast metrics to web dashboard if enabled
     if web_dashboard:
         metrics_data = {
-            'total_latency_ms': elapsed_ms,
-            'ciphertext_size_bytes': len(ciphertext),
-            'public_key_size_bytes': len(alice_pub_pq),
-            'success': success,
-            'encap_variance': 0.0,
+            'total_latency_ms': metrics.latency_ms,
+            'ciphertext_size_bytes': metrics.ciphertext_size,
+            'public_key_size_bytes': metrics.public_key_size,
+            'success': metrics.success,
+            'encap_variance': metrics.encap_variance,
         }
         broadcast_metrics(metrics_data, anomaly_score, session.current_suite)
 
@@ -226,7 +263,13 @@ if __name__ == "__main__":
             exit(1)
 
     try:
-        hybrid_fusion_handshake(chosen_kem, force_real=args.force_real, web_dashboard=args.web_dashboard)
+        hybrid_fusion_handshake(
+            chosen_kem,
+            force_real=args.force_real,
+            web_dashboard=args.web_dashboard,
+            session_id=args.session_id,
+            test_scenario=args.test_scenario,
+        )
     except RuntimeError as exc:
         print(f"Error: {exc}")
         exit(1)
