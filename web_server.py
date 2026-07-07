@@ -5,10 +5,6 @@ WebSocket server for real-time 3SA metrics streaming
 
 import json
 import logging
-import os
-import subprocess
-import sys
-import time
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
 from threading import Lock
@@ -57,57 +53,91 @@ def handle_agility():
         _LOGGER.error(f"Error processing agility event: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 400
 
-@app.route('/api/test/handshake', methods=['POST'])
-def handle_test_handshake():
-    """Trigger a real 3SA handshake with a synthetic anomaly scenario."""
+@app.route('/api/test/metrics', methods=['POST'])
+def handle_test_metrics():
+    """Handle test metrics injection for dashboard testing - clearly marked as synthetic data"""
     try:
-        request_body = request.get_json(silent=True) or {}
-        anomaly_type = request_body.get('anomaly_type', 'normal')
-        session_id = request_body.get('session_id', 'dashboard-test')
-        _run_test_handshake(anomaly_type, session_id)
-        return jsonify({'status': 'success', 'anomaly_type': anomaly_type}), 200
+        test_data = request.json
+        # Mark as test data to ensure cryptographic compliance
+        test_data['is_test_data'] = True
+        test_data['timestamp'] = datetime.now().isoformat()
+        broadcast_metrics(test_data)
+        _LOGGER.info(f"Test metrics injected: {test_data.get('anomaly_type', 'unknown')}")
+        return jsonify({'status': 'success', 'message': 'Test metrics broadcasted'}), 200
     except Exception as e:
-        _LOGGER.error(f"Error processing test handshake: {e}")
+        _LOGGER.error(f"Error processing test metrics: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 400
 
 @app.route('/api/test/agility', methods=['POST'])
 def handle_test_agility():
-    """Emit a synthetic agility transition event for dashboard testing."""
+    """Handle test agility event injection for dashboard testing - clearly marked as synthetic data"""
     try:
-        agility_data = request.get_json(silent=True) or {}
-        agility_data.setdefault('event_type', 'manual_override')
-        agility_data.setdefault('old_suite', 'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256')
-        agility_data.setdefault('new_suite', 'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256')
-        agility_data.setdefault('anomaly_score', 0.05)
-        agility_data['timestamp'] = datetime.now().isoformat()
-        socketio.emit('agility_event', agility_data)
-        return jsonify({'status': 'success'}), 200
+        test_data = request.json
+        # Mark as test data to ensure cryptographic compliance
+        test_data['is_test_data'] = True
+        test_data['timestamp'] = datetime.now().isoformat()
+        socketio.emit('agility_event', test_data)
+        _LOGGER.info(f"Test agility event injected: {test_data.get('trigger_event', 'unknown')}")
+        return jsonify({'status': 'success', 'message': 'Test agility event broadcasted'}), 200
     except Exception as e:
         _LOGGER.error(f"Error processing test agility event: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 400
 
-
-def _run_test_handshake(anomaly_type: str, session_id: str):
-    """Launch the real 3SA handshake script with a scenario override."""
-    script_path = os.path.join(os.path.dirname(__file__), '3SA.py')
-    if anomaly_type == 'repeated_failure':
-        for _ in range(3):
-            subprocess.run(
-                [sys.executable, script_path, '--web-dashboard', '--test-scenario', 'failure', '--session-id', session_id],
-                cwd=os.path.dirname(__file__),
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=False,
-            )
-            time.sleep(0.2)
-        return
-
-    subprocess.Popen(
-        [sys.executable, script_path, '--web-dashboard', '--test-scenario', anomaly_type, '--session-id', session_id],
-        cwd=os.path.dirname(__file__),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+@app.route('/api/test/scenarios', methods=['GET'])
+def get_test_scenarios():
+    """Return predefined test scenarios for dashboard testing - synthetic data only"""
+    scenarios = {
+        'normal': {
+            'description': 'Normal handshake with expected metrics',
+            'metrics': {
+                'total_latency_ms': 2.5,
+                'ciphertext_size_bytes': 1088,
+                'public_key_size_bytes': 1184,
+                'success': True,
+                'encap_variance': 0.0,
+                'anomaly_score': 0.15,
+                'suite': 'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256',
+                'anomaly_type': 'normal'
+            }
+        },
+        'timing_attack': {
+            'description': 'Simulated timing attack with elevated latency',
+            'metrics': {
+                'total_latency_ms': 15.8,
+                'ciphertext_size_bytes': 1088,
+                'public_key_size_bytes': 1184,
+                'success': True,
+                'encap_variance': 0.0,
+                'anomaly_score': 0.85,
+                'suite': 'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256',
+                'anomaly_type': 'timing_anomaly'
+            }
+        },
+        'size_tampering': {
+            'description': 'Simulated size tampering with incorrect key sizes',
+            'metrics': {
+                'total_latency_ms': 2.5,
+                'ciphertext_size_bytes': 1500,
+                'public_key_size_bytes': 1400,
+                'success': True,
+                'encap_variance': 0.0,
+                'anomaly_score': 0.92,
+                'suite': 'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256',
+                'anomaly_type': 'size_tampering'
+            }
+        },
+        'agility_transition': {
+            'description': 'Simulated agility event triggering suite transition',
+            'agility': {
+                'event_type': 'agility_transition',
+                'trigger_event': 'HIGH_ANOMALY_SCORE',
+                'old_suite': 'TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256',
+                'new_suite': 'TLS_X25519_ML_KEM_1024_WITH_AES_256_GCM_SHA3_256',
+                'anomaly_score': 0.88
+            }
+        }
+    }
+    return jsonify({'scenarios': scenarios, 'note': 'All scenarios use synthetic test data only'}), 200
 
 @socketio.on('connect')
 def handle_connect():

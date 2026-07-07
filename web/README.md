@@ -181,10 +181,15 @@ gunicorn -w 4 -b 0.0.0.0:5000 web_server:app
 - `connect`: Client connects to server
 - `disconnect`: Client disconnects from server
 - `metrics_update`: Server broadcasts new metrics to all clients
+- `agility_event`: Server broadcasts agility transition events
 
 ### API Endpoints
 - `GET /api/metrics`: Returns historical metrics
 - `POST /api/metrics`: Accepts new metrics for broadcasting
+- `POST /api/agility`: Accepts agility events for broadcasting
+- `GET /api/test/scenarios`: Returns predefined test scenarios (synthetic data only)
+- `POST /api/test/metrics`: Injects synthetic test metrics for dashboard testing
+- `POST /api/test/agility`: Injects synthetic test agility events for dashboard testing
 
 ### Metrics Schema
 ```json
@@ -196,9 +201,39 @@ gunicorn -w 4 -b 0.0.0.0:5000 web_server:app
   "encap_variance": 0.0,
   "anomaly_score": 0.15,
   "suite": "TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256",
-  "timestamp": "2026-07-01T02:45:00.000000"
+  "timestamp": "2026-07-01T02:45:00.000000",
+  "is_test_data": false
 }
 ```
+
+### Test Control Panel
+
+The dashboard includes a Test Control Panel for manual testing and validation. This panel uses synthetic data only and does not affect real cryptographic operations.
+
+**Features:**
+- **Preset Scenarios**: Pre-configured test cases including normal handshakes, timing attacks, size tampering, and agility transitions
+- **Custom Metrics Injection**: Manually specify metric values to test dashboard visualization
+- **Custom Agility Events**: Simulate suite transitions with custom parameters
+- **Real-time Feedback**: Status messages confirm successful injection
+
+**Preset Scenarios:**
+- `normal`: Normal handshake with expected metrics (anomaly score: 0.15)
+- `timing_attack`: Simulated timing attack with elevated latency (anomaly score: 0.85)
+- `size_tampering`: Simulated size tampering with incorrect key sizes (anomaly score: 0.92)
+- `agility_transition`: Simulated agility event triggering suite transition
+
+**Cryptographic Compliance:**
+- All test data is clearly marked with `is_test_data: true` flag
+- Test data never affects real cryptographic operations
+- Test metrics are synthetic and based on literature values
+- No real keys or cryptographic material is generated during testing
+
+**Using the Test Control Panel:**
+1. Open the dashboard at `http://localhost:3000`
+2. The Test Control Panel appears at the top of the dashboard
+3. Click preset scenario buttons to inject test data
+4. Use custom forms to inject specific metric values
+5. Observe real-time dashboard updates with test data
 
 ## License
 
