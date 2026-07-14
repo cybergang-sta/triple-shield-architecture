@@ -22,7 +22,7 @@ Evaluate the implementation security and operational robustness of hybrid quantu
    - Implemented via `liboqs` Python bindings (`oqs` library) and `cryptography` package  
    - Ensures backward compatibility and quantum-resistant forward secrecy  
 
-2. **Secret Fusion & Key Derivation**  
+2. **Secret Fusion and Key Derivation**  
    - Classical + PQ shared secrets concatenated and processed through `HKDF-SHA3-256`  
    - Outputs a unified 32-byte session key ready for `AES-GCM` or `ChaCha20-Poly1305`  
    - Cryptographically sound domain separation via `info=b"hybrid-pqc-v1-fusion"`  
@@ -50,7 +50,7 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 
 ---
 
-## 4. Verification Framework & Current Status
+## 4. Verification Framework and Current Status
 *Aligned with standard capstone evaluation rubrics emphasizing methodological rigor, traceability, and reproducible validation.*
 
 ### Completed Infrastructure
@@ -65,7 +65,7 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 - Exact byte size validation (ML-KEM-768: 1184/1088, ML-KEM-1024: 1568/1568, Classical: 32/32)
 - End-to-end simulation harness with automated logging and metric collection fully staged
 
-### Defined Validation Metrics & Success Criteria
+### Defined Validation Metrics and Success Criteria
 | Metric Category | Specific Measure | Target Threshold | Validation Method |
 |----------------|----------------|------------------|------------------|
 | Functional Correctness | Key agreement success rate | ≥99.9% over 1,000 handshakes | Deterministic simulation + cross-library validation |
@@ -73,7 +73,7 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 | AI Detection Efficacy | Precision/Recall on timing anomalies | ≥85% F1-score | Cross-validation on synthetically perturbed datasets |
 | Crypto-Agility Response | Session recovery after anomaly trigger | 100% successful re-negotiation | Fault-injection testing + state-machine verification |
 
-### Technical Risks & Mitigation Strategies
+### Technical Risks and Mitigation Strategies
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | `liboqs` Python binding instability under high-load simulation | Moderate | Containerized test environment with strict version pinning; fallback to C API if throughput degrades |
@@ -96,7 +96,7 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 
 ---
 
-## 6. Execution Roadmap & Deliverable Timeline
+## 6. Execution Roadmap and Deliverable Timeline
 | Milestone | Target Date | Deliverable |
 |-----------|-------------|-------------|
 | Stress-testing environment finalization | 1 Week | Containerized simulation harness + logging pipeline |
