@@ -101,11 +101,11 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 |-----------|-------------|-------------|
 | Stress-testing environment finalization | 1 Week | Containerized simulation harness + logging pipeline |
 | Baseline performance profiling runs | 2 Weeks | Latency/throughput dataset vs. X25519 |
-| AI model training & cross-validation | 2 Weeks | Classifier weights, confusion matrix, F1 metrics |
-| Final comparative analysis drafting | 2 Weeks | Chapter 4: Results & Discussion |
-| Capstone submission & defense | 2 Weeks | Final report, reproducible codebase, presentation |
+| AI model training and cross-validation | 2 Weeks | Classifier weights, confusion matrix, F1 metrics |
+| Final comparative analysis drafting | 2 Weeks | Chapter 4: Results and Discussion |
+| Capstone submission and defense | 2 Weeks | Final report, reproducible codebase, presentation |
 
 ---
 
 ## 7. Research Alignment
-This prototype bridges empirical software security, cryptographic implementation analysis, and AI-assisted vulnerability detection. It directly complements academic work in LLM-driven code analysis, automated vulnerability patching, and large-scale security dataset generation (e.g., APPATCH, VGX), providing a concrete, reproducible testbed for evaluating AI-augmented security in next-generation software systems.
+This prototype bridges empirical software security, cryptographic implementation analysis, and AI-assisted vulnerability detection. It directly complements academic work in LLM-driven code analysis, automated vulnerability patching, and large-scale security dataset generation (APPATCH, VGX), providing a concrete, reproducible testbed for evaluating AI-augmented security in next-generation software systems.
