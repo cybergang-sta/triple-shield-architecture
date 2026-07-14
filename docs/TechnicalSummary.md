@@ -99,11 +99,11 @@ Evaluate the implementation security and operational robustness of hybrid quantu
 ## 6. Execution Roadmap & Deliverable Timeline
 | Milestone | Target Date | Deliverable |
 |-----------|-------------|-------------|
-| Stress-testing environment finalization | [Month, Year] | Containerized simulation harness + logging pipeline |
-| Baseline performance profiling runs | [Month, Year] | Latency/throughput dataset vs. X25519 |
-| AI model training & cross-validation | [Month, Year] | Classifier weights, confusion matrix, F1 metrics |
-| Final comparative analysis drafting | [Month, Year] | Chapter 4: Results & Discussion |
-| Capstone submission & defense | [Month, Year] | Final report, reproducible codebase, presentation |
+| Stress-testing environment finalization | 1 Week | Containerized simulation harness + logging pipeline |
+| Baseline performance profiling runs | 2 Weeks | Latency/throughput dataset vs. X25519 |
+| AI model training & cross-validation | 2 Weeks | Classifier weights, confusion matrix, F1 metrics |
+| Final comparative analysis drafting | 2 Weeks] | Chapter 4: Results & Discussion |
+| Capstone submission & defense | 2 Weeks | Final report, reproducible codebase, presentation |
 
 ---
 
