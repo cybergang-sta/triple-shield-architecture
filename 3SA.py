@@ -65,6 +65,11 @@ def parse_args():
         default="default",
         help="Session identifier used for agility tracking and repeated-failure tests",
     )
+    parser.add_argument(
+        "--log-file",
+        default=None,
+        help="Path to a file to write logs to (optional)",
+    )
     return parser.parse_args()
 
 
@@ -249,7 +254,17 @@ if __name__ == "__main__":
     # Configure logging level via environment or default
     import logging
     log_level = os.environ.get("THREE_SA_LOG", "INFO").upper()
-    logging.basicConfig(level=getattr(logging, log_level, logging.INFO), format="[3SA] %(levelname)s: %(message)s")
+    # Always enable file logging. Use CLI arg or env var, else default to 3sa.log
+    log_file = args.log_file or os.environ.get("THREE_SA_LOG_FILE") or os.path.join(os.getcwd(), "3sa.log")
+    # Ensure parent directory exists if provided
+    log_dir = os.path.dirname(log_file)
+    if log_dir:
+        try:
+            os.makedirs(log_dir, exist_ok=True)
+        except Exception:
+            pass
+    handlers = [logging.StreamHandler(), logging.FileHandler(log_file, encoding="utf-8")]
+    logging.basicConfig(level=getattr(logging, log_level, logging.INFO), format="[3SA] %(levelname)s: %(message)s", handlers=handlers)
     
     if args.list_kems:
         if oqs_available():
