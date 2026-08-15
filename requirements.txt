@@ -2,7 +2,7 @@ cryptography
 scikit-learn
 pandas
 numpy
-# liboqs - Installed from source in Dockerfile
+# liboqs-python: Use mock KEM backend for testing
 # Web dashboard dependencies
 flask
 flask-socketio
