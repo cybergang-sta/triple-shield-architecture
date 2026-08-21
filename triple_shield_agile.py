@@ -91,8 +91,8 @@ def execute_hybrid_handshake(session_id: int, suite_name: str) -> Tuple[bool, fl
     # CLIENT
     # Note: In a real implementation, Alice would send her public keys to Bob over the network.
     alice_priv, alice_pub_cls = get_classical_keypair(suite.classical_curve)
-    with oqs.KeyEncapsulation(suite.pq_kem) as alice_kem:
-        alice_pub_pq = alice_kem.generate_keypair()
+    alice_kem = oqs.KeyEncapsulation(suite.pq_kem)
+    alice_pub_pq = alice_kem.generate_keypair()
 
     # SERVER 
     #  Bob receives Alice's public keys and responds with his own public key and the encapsulated ciphertext.
@@ -100,13 +100,19 @@ def execute_hybrid_handshake(session_id: int, suite_name: str) -> Tuple[bool, fl
     shared_cls_bob = compute_classical_shared(bob_priv, alice_pub_cls, suite.classical_curve)
     
     with oqs.KeyEncapsulation(suite.pq_kem) as bob_kem:
-        ciphertext, shared_pq_bob = bob_kem.encapsulate(alice_pub_pq)
+        if hasattr(bob_kem, 'encap_secret'):
+            ciphertext, shared_pq_bob = bob_kem.encap_secret(alice_pub_pq)
+        else:
+            ciphertext, shared_pq_bob = bob_kem.encapsulate(alice_pub_pq)
 
     # CLIENT DECAPSULATION 
     #  Alice uses her private keys to compute the shared secrets and derive the final session key.
     shared_cls_alice = compute_classical_shared(alice_priv, bob_pub_cls, suite.classical_curve)
-    with oqs.KeyEncapsulation(suite.pq_kem) as alice_kem_recv:
-        shared_pq_alice = alice_kem_recv.decapsulate(ciphertext)
+    if hasattr(alice_kem, 'decap_secret'):
+        shared_pq_alice = alice_kem.decap_secret(ciphertext)
+    else:
+        shared_pq_alice = alice_kem.decapsulate(ciphertext)
+    alice_kem.free()
 
     # HKDF FUSION 
     # Both parties derive the final session key using HKDF on the combined classical and PQ secrets.
