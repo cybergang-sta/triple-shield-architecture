@@ -27,6 +27,8 @@ CSV_HEADER = [
     "encap_variance",
     "label",
     "anomaly_type",
+    "rf_raw_probability",
+    "anomaly_score",
 ]
 
 
@@ -60,6 +62,8 @@ class HandshakeLogger:
         suite: str,
         label: int = 0,
         anomaly_type: str = "normal",
+        rf_raw_probability: float = 0.0,
+        anomaly_score: float = 0.0,
     ):
         """Append one handshake record to the CSV."""
         self._iteration += 1
@@ -74,13 +78,15 @@ class HandshakeLogger:
             encap_variance,
             label,
             anomaly_type,
+            rf_raw_probability,
+            anomaly_score,
         ]
         with self._lock:
             with open(self.csv_path, "a", newline="", encoding="utf-8") as fh:
                 csv.writer(fh).writerow(row)
         _LOGGER.debug("Logged handshake #%d to %s", self._iteration, self.csv_path)
 
-    def log_from_metrics(self, metrics, anomaly_score: float, suite: Optional[str] = None, test_scenario: Optional[str] = None, latency_ns: int = 0, anomaly_threshold: float = 0.5):
+    def log_from_metrics(self, metrics, anomaly_score: float, suite: Optional[str] = None, test_scenario: Optional[str] = None, latency_ns: int = 0, anomaly_threshold: float = 0.5, rf_raw_probability: float = 0.0):
         """Convenience wrapper that derives label and anomaly_type from context.
 
         Parameters
@@ -88,7 +94,7 @@ class HandshakeLogger:
         metrics : HandshakeMetrics
             The metrics object from the current handshake.
         anomaly_score : float
-            Score returned by ``AnomalyDetector.score()``.
+            Score returned by ``AnomalyDetector.score()`` (after suite-aware adjustment).
         suite : str, optional
             Suite name override (e.g. from agility controller).
         test_scenario : str or None
@@ -99,6 +105,9 @@ class HandshakeLogger:
             Suite-specific threshold from policy.json (e.g. 0.6 for ML-KEM-768).
             Labels are derived using this threshold, not a flat 0.5, so that
             training labels match the agility controller's decision boundary.
+        rf_raw_probability : float
+            Raw RF probability of anomalous class before suite-aware adjustment.
+            Logged for observability into the full scoring pipeline.
         """
         suite_name = suite or getattr(metrics, "suite", "unknown") or "unknown"
 
@@ -125,6 +134,8 @@ class HandshakeLogger:
             suite=suite_name,
             label=label,
             anomaly_type=anomaly_type,
+            rf_raw_probability=rf_raw_probability,
+            anomaly_score=anomaly_score,
         )
 
 

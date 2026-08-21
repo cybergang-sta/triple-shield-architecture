@@ -255,6 +255,14 @@ class AnomalyDetector:
 
         self.is_trained = True
 
+    def raw_score(self, metrics: HandshakeMetrics) -> float:
+        """Return raw RF probability of anomalous class (before suite-aware adjustment)."""
+        if not self.is_trained:
+            return 0.5
+        features = metrics.to_feature_vector().reshape(1, -1)
+        proba = self.classifier.predict_proba(features)
+        return float(proba[0][1])
+
     def score(self, metrics: HandshakeMetrics) -> float:
         """Return anomaly score (0.0 = normal, 1.0 = anomalous)."""
         if not self.is_trained:

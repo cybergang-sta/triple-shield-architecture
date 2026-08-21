@@ -210,8 +210,9 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
         suite=session.current_suite,
     )
     metrics = apply_test_scenario(metrics, test_scenario)
+    rf_raw = detector.raw_score(metrics)
     anomaly_score = detector.score(metrics)
-    print(f"\n[AI Monitor] Anomaly Score: {anomaly_score:.3f}")
+    print(f"\n[AI Monitor] Anomaly Score: {anomaly_score:.3f} (RF raw: {rf_raw:.4f})")
 
     # 6. PERSIST HANDSHAKE DATA
     hs_logger = get_handshake_logger(dataset_output)
@@ -227,6 +228,7 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
             test_scenario=test_scenario,
             latency_ns=elapsed_ns,
             anomaly_threshold=suite_anomaly_threshold,
+            rf_raw_probability=rf_raw,
         )
         print(f"[Dataset] Logged handshake data -> {hs_logger.csv_path}")
 
