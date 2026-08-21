@@ -2,7 +2,7 @@ cryptography
 scikit-learn
 pandas
 numpy
-# liboqs-python: Use mock KEM backend for testing
+liboqs-python
 # Web dashboard dependencies
 flask
 flask-socketio

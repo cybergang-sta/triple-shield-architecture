@@ -10,6 +10,7 @@ from cryptography.hazmat.primitives import serialization
 from oqs_middleware import create_kem, oqs_available, supported_kems
 from ai_anomaly_detector import get_detector, initialize_detector, HandshakeMetrics
 from agility_controller import get_controller, initialize_controller, AgilityEvent
+from handshake_logger import get_handshake_logger
 import binascii
 import requests
 
@@ -70,6 +71,11 @@ def parse_args():
         default=None,
         help="Path to a file to write logs to (optional)",
     )
+    parser.add_argument(
+        "--dataset-output",
+        default=None,
+        help="Path to CSV file to append handshake data for anomaly detector training",
+    )
     return parser.parse_args()
 
 
@@ -96,13 +102,14 @@ def apply_test_scenario(metrics: HandshakeMetrics, scenario: Optional[str] = Non
     return metrics
 
 
-def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, session_id: str = "default", web_dashboard: bool = False, test_scenario: Optional[str] = None):
+def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, session_id: str = "default", web_dashboard: bool = False, test_scenario: Optional[str] = None, dataset_output: Optional[str] = None):
     """Execute hybrid PQC handshake with anomaly detection and agility.
     
     Args:
         kem_algorithm: KEM algorithm to use
         force_real: Force real oqs backend
         session_id: Session identifier for agility tracking
+        dataset_output: Optional CSV path to log handshake data for training
     """
     logger = logging.getLogger("3SA")
     print(f"--- Starting Hybrid PQC Handshake (X25519 + {kem_algorithm}) ---\n")
@@ -114,6 +121,7 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
         initialize_detector()
     # Load suite overhead ranges for suite-aware anomaly detection
     detector.load_suite_overhead_ranges()
+    detector.set_backend_mode(real=force_real)
     
     # Create session in agility controller
     # Convert kem algorithm name to match policy.json format (ML-KEM-768 -> ML_KEM_768)
@@ -122,6 +130,7 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
 
     # Measure handshake latency
     start_time = time.perf_counter()
+    start_time_ns = time.perf_counter_ns()
 
     # 1. CLIENT (ALICE) GENERATION
     alice_priv_classic = x25519.X25519PrivateKey.generate()
@@ -180,6 +189,7 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     hkdf_ns = time.perf_counter_ns() - hkdf_start_ns
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000
+    elapsed_ns = time.perf_counter_ns() - start_time_ns
 
     print(f"Final Session Key (Alice): {alice_final_key.hex()}")
     print(f"Final Session Key (Bob):   {bob_final_key.hex()}")
@@ -202,6 +212,18 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     metrics = apply_test_scenario(metrics, test_scenario)
     anomaly_score = detector.score(metrics)
     print(f"\n[AI Monitor] Anomaly Score: {anomaly_score:.3f}")
+
+    # 6. PERSIST HANDSHAKE DATA
+    hs_logger = get_handshake_logger(dataset_output)
+    if hs_logger is not None:
+        hs_logger.log_from_metrics(
+            metrics,
+            anomaly_score,
+            suite=session.current_suite,
+            test_scenario=test_scenario,
+            latency_ns=elapsed_ns,
+        )
+        print(f"[Dataset] Logged handshake data -> {hs_logger.csv_path}")
 
     # Broadcast metrics to web dashboard if enabled
     if web_dashboard:
@@ -296,6 +318,7 @@ if __name__ == "__main__":
             web_dashboard=args.web_dashboard,
             session_id=args.session_id,
             test_scenario=args.test_scenario,
+            dataset_output=args.dataset_output,
         )
     except RuntimeError as exc:
         print(f"Error: {exc}")

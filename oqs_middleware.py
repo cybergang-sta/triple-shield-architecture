@@ -46,10 +46,14 @@ class OqsKEM:
         return self._backend.generate_keypair()
 
     def encapsulate(self, peer_public: bytes) -> Tuple[bytes, bytes]:
-        return self._backend.encapsulate(peer_public)
+        if hasattr(self._backend, 'encapsulate'):
+            return self._backend.encapsulate(peer_public)
+        return self._backend.encap_secret(peer_public)
 
     def decapsulate(self, ciphertext: bytes) -> bytes:
-        return self._backend.decapsulate(ciphertext)
+        if hasattr(self._backend, 'decapsulate'):
+            return self._backend.decapsulate(ciphertext)
+        return self._backend.decap_secret(ciphertext)
 
     @property
     def is_real(self) -> bool:
@@ -112,7 +116,8 @@ def oqs_available() -> bool:
 def supported_kems() -> list[str]:
     if _OQS_AVAILABLE:
         try:
-            return list(oqs.get_enabled_KEMs())
+            fn = getattr(oqs, 'get_enabled_kem_mechanisms', None) or getattr(oqs, 'get_enabled_KEMs', None)
+            return list(fn()) if fn else []
         except AttributeError:
             return []
     return []

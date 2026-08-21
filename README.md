@@ -19,12 +19,16 @@ A demonstration of a **hybrid post-quantum cryptography (PQC) handshake** combin
 
 ### Prerequisites
 - **Python 3.10+** (tested on Python 3.13)
-- **cryptography** library (for X25519 and HKDF)
-- **liboqs** (optional - mock implementation used for development/testing)
+- **C compiler** (for building liboqs from source)
+  - **Windows**: MSVC Build Tools (Visual Studio 2022). Install via [Visual Studio Installer](https://visualstudio.microsoft.com/visual-cpp-build-tools/) — select the "Desktop development with C++" workload.
+  - **Linux**: `sudo apt-get install -y build-essential cmake ninja-build`
+  - **macOS**: Xcode Command Line Tools (`xcode-select --install`)
+- **CMake 3.15+**
+- **Git**
 
 ### liboqs Backend
 
-The project uses a mock implementation of liboqs for development and testing. The mock provides:
+The project ships with a **mock KEM backend** for development and testing. The mock provides:
 
 - **Exact byte sizes** from PQC literature:
   - ML-KEM-768: 1184 bytes public key, 1088 bytes ciphertext
@@ -33,27 +37,7 @@ The project uses a mock implementation of liboqs for development and testing. Th
 - **Deterministic output** for reproducible AI training
 - **Literature-based parameters** for rigorous validation
 
-**For production deployment**, install real liboqs:
-
-```bash
-# Install system dependencies
-sudo apt-get install -y libssl-dev cmake ninja-build build-essential
-
-# Build liboqs from source
-git clone https://github.com/open-quantum-safe/liboqs.git
-cd liboqs
-mkdir build && cd build
-cmake -GNinja ..
-ninja
-sudo ninja install
-sudo ldconfig
-
-# Install Python bindings
-cd ../python
-pip install .
-```
-
-The `oqs_middleware.py` module automatically detects if liboqs is available and falls back to the mock implementation when needed.
+The `oqs_middleware.py` module automatically detects if the real `oqs` module is importable and falls back to the mock implementation when it is not. Use `--force-real` on the CLI to require the real backend (raises `RuntimeError` if unavailable).
 
 ### Install Dependencies
 
@@ -61,11 +45,7 @@ The `oqs_middleware.py` module automatically detects if liboqs is available and 
 pip install -r requirements.txt
 ```
 
-Or manually:
-
-```bash
-pip install cryptography
-```
+This installs `liboqs-python` from PyPI along with the other project dependencies.
 
 ---
 
@@ -93,7 +73,7 @@ python 3SA.py --kem KYBER512 --force-real
 python 3SA.py --web-dashboard  # Enable real-time metrics to web dashboard
 ```
 
-Use `--list-kems` to see available oqs algorithms. By default, the wrapper falls back to the mock backend when `oqs` is not installed. Use `--force-real` to require the real `oqs` backend.
+Use `--list-kems` to see available oqs algorithms. By default, the wrapper falls back to the mock backend when `liboqs-python` is not installed or `oqs.dll`/`liboqs.so` is not on the library path. Use `--force-real` to require the real `oqs` backend (raises an error if unavailable).
 
 ### Expected Output
 
@@ -123,7 +103,7 @@ Result: SUCCESS. Hybrid keys match and are ready for AES-GCM.
 - Both derive a 32-byte classical secret via ECDH.
 
 ### Post-Quantum Path (ML-KEM-768)
-The script includes a **fallback mock KEM** when `pyoqs` is unavailable:
+The script includes a **fallback mock KEM** when `liboqs-python` is unavailable:
 - Alice generates a mock KEM keypair and sends the public key to Bob.
 - Bob encapsulates a shared secret using Alice's PQ public key, receiving:
   - A **ciphertext** (ephemeral random bytes)
@@ -148,24 +128,88 @@ final_key = HKDF(
 
 ---
 
-## Using Real liboqs (Optional)
+## Using Real liboqs
 
-To replace the fallback mock with the real **Open Quantum Safe liboqs** library:
+The project defaults to the mock backend. To use the real **Open Quantum Safe liboqs** library for production-grade KEM operations:
 
-### Option A: Build from Source (Advanced)
-1. Clone [liboqs](https://github.com/open-quantum-safe/liboqs)
-2. Build the C library on Windows (requires CMake, MSVC)
-3. Install Python bindings: `pip install liboqs-python`
-4. Remove the fallback code from `3SA.py` (lines 1–38)
+### Windows (MSVC)
 
-### Option B: Use Docker
+**1. Install MSVC Build Tools** (if not already installed):
+
+Download the [Build Tools for Visual Studio](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and select the **"Desktop development with C++"** workload during installation.
+
+**2. Build liboqs from source**:
+
+Open a **Developer Command Prompt for VS** (or a terminal where `vcvarsall.bat` has been sourced):
+
+```powershell
+git clone --depth=1 https://github.com/open-quantum-safe/liboqs C:\liboqs-src
+cd C:\liboqs-src
+cmake -S . -B build -G Ninja -DBUILD_SHARED_LIBS=ON -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DCMAKE_INSTALL_PREFIX=C:\liboqs
+cmake --build build --parallel 8
+cmake --install build
+```
+
+**3. Add `oqs.dll` to PATH**:
+
+```powershell
+# Current session
+$env:PATH = "C:\liboqs\bin;$env:PATH"
+
+# Persist for future sessions (User PATH)
+$currentPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+[System.Environment]::SetEnvironmentVariable("Path", "C:\liboqs\bin;$currentPath", "User")
+[System.Environment]::SetEnvironmentVariable("OQS_INSTALL_PATH", "C:\liboqs", "User")
+```
+
+**4. Install Python bindings**:
+
+```bash
+pip install liboqs-python
+```
+
+### Linux / macOS
+
+```bash
+# Install build dependencies
+sudo apt-get install -y cmake ninja-build libssl-dev git   # Debian/Ubuntu
+# brew install cmake ninja openssl                           # macOS
+
+# Build and install liboqs
+git clone --depth=1 https://github.com/open-quantum-safe/liboqs
+cmake -S liboqs -B liboqs/build -DBUILD_SHARED_LIBS=ON
+cmake --build liboqs/build --parallel $(nproc)
+sudo cmake --build liboqs/build --target install
+sudo ldconfig                                              # Linux only
+
+# Set library path (if needed)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib    # Linux
+# export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/lib  # macOS
+
+# Install Python bindings
+pip install liboqs-python
+```
+
+### Verify the Installation
+
+```bash
+python 3SA.py --list-kems
+```
+
+If the real backend is installed, this prints all enabled KEM algorithms (e.g., `ML-KEM-768`, `ML-KEM-1024`, `Kyber768`, ...). If not, it reports "oqs is not available" and the mock backend is used.
+
+```bash
+python 3SA.py --kem ML-KEM-768 --force-real
+```
+
+`--force-real` forces the real `oqs` backend and raises `RuntimeError` if the library is not importable.
+
+### Docker
+
 ```bash
 docker run -it openquantumsafe/liboqs:latest
 # Inside container: pip install liboqs-python
 ```
-
-### Option C: Pre-built Binaries
-Check the [Open Quantum Safe project](https://openquantumsafe.org/) for pre-built Windows binaries.
 
 ---
 
@@ -439,17 +483,21 @@ Each sample includes:
 
 1. **Serialization fix**: X25519 public key export now uses `public_bytes(encoding=..., format=...)` instead of the non-existent `public_bytes_raw()`.
 2. **Hex output**: Changed from `binascii.hexlify()` (returns bytes) to `.hex()` for cleaner string output.
-3. **Fallback KEM**: Added a mock `oqs.KeyEncapsulation` class for local testing when `pyoqs` is unavailable.
+3. **Fallback KEM**: Added a mock `oqs.KeyEncapsulation` class for local testing when `liboqs-python` is unavailable.
+4. **liboqs-python API compatibility**: `oqs_middleware.py` handles both the 0.16.0 API (`encap_secret`/`decap_secret`, `get_enabled_kem_mechanisms`) and older APIs (`encapsulate`/`decapsulate`, `get_enabled_KEMs`) via runtime detection.
+5. **Anomaly detector backend awareness**: `ai_anomaly_detector.py` now accepts a `use_real_backend` flag via `set_backend_mode(real=True)`. When the real oqs backend is active, suite-aware latency checks use `latency_threshold_ms` (tuned for real liboqs overhead, ~2ms). When using the mock backend, the much higher `latency_threshold_ms_mock` (200ms) is preferred.
+6. **Real vs mock threshold wiring**: `3SA.py` passes `force_real` to the anomaly detector after loading suite overhead ranges, so the correct threshold key is used during scoring.
 
 ---
 
 ## Security Notes
 
 **This is a demonstration, not production-ready code:**
-- The fallback KEM mock is deterministic and insecure.
+- The fallback KEM mock is deterministic and insecure — use `--force-real` for real cryptographic operations.
 - No authentication or signatures are used.
 - Session keys are not persisted or used for encryption in this demo.
-- For production, use the real `liboqs` library and add proper error handling, input validation, and protocol constraints.
+- When using the real liboqs backend, re-run `benchmark.py` to calibrate the AI anomaly detector's latency thresholds, as real liboqs calls may differ from the literature-based assumptions used in the mock.
+- For production, add proper error handling, input validation, protocol constraints, and use a validated liboqs build.
 
 ---
 

@@ -64,6 +64,18 @@ class AnomalyDetector:
         self.scaler = None
         self.is_trained = False
         self.suite_overhead_ranges = {}
+        self.use_real_backend = False
+
+    def set_backend_mode(self, real: bool = False):
+        """Set whether the real oqs backend is active.
+
+        When real is True, suite-aware latency checks use
+        ``latency_threshold_ms`` (tuned for real liboqs overhead).
+        When real is False (default), ``latency_threshold_ms_mock`` is
+        preferred, allowing much higher thresholds suitable for testing.
+        """
+        self.use_real_backend = real
+        _LOGGER.info("Anomaly detector backend mode: %s", "real" if real else "mock")
 
     def load_suite_overhead_ranges(self, policy_path: Optional[str] = None):
         """Load expected overhead ranges from policy configuration."""
@@ -185,7 +197,10 @@ class AnomalyDetector:
                 ct_exact = overhead.get("ciphertext_size_exact")
                 pk_exact = overhead.get("public_key_size_exact")
                 # Use mock threshold if available (for testing with mock backend), otherwise use literature threshold
-                latency_threshold = overhead.get("latency_threshold_ms_mock", overhead.get("latency_threshold_ms", 2.0))
+                if self.use_real_backend:
+                    latency_threshold = overhead.get("latency_threshold_ms", 2.0)
+                else:
+                    latency_threshold = overhead.get("latency_threshold_ms_mock", overhead.get("latency_threshold_ms", 2.0))
                 requires_fragmentation = overhead.get("requires_fragmentation", False)
 
                 # Size validation: Any deviation from exact sizes is anomalous
