@@ -222,7 +222,7 @@ class PerformanceBenchmark:
 
         _LOGGER.info("\n=== Performance Comparison ===")
         _LOGGER.info("\n%s", df.to_string(index=False))
-        _LOGGER.info("\nOverhead: %.1f%% (target: ≤20%%)", overhead_pct)
+        _LOGGER.info("\nOverhead: %.1f%% (target: <=20%%)", overhead_pct)
         _LOGGER.info("Result: %s", "PASS" if overhead_pct <= 20.0 else "FAIL")
 
         return df, overhead_pct
@@ -269,9 +269,9 @@ Operation-Level Metrics (Hybrid):
 """
         report += f"""
 Success Criteria Validation:
-- Target Overhead: ≤20%
+- Target Overhead: <=20%
 - Achieved Overhead: {overhead_pct:.1f}%
-- Status: {"✓ PASS" if overhead_pct <= 20.0 else "✗ FAIL"}
+- Status: {"PASS" if overhead_pct <= 20.0 else "FAIL"}
 
 Interpretation:
 The hybrid handshake {"meets" if overhead_pct <= 20.0 else "exceeds"} the target overhead threshold.

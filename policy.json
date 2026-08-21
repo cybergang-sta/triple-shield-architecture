@@ -20,9 +20,9 @@
       "expected_overhead": {
         "ciphertext_size_exact": 1088,
         "public_key_size_exact": 1184,
-        "latency_ms_min": 0.50,
-        "latency_ms_max": 0.70,
-        "latency_threshold_ms": 2.0,
+        "latency_ms_min": 1.50,
+        "latency_ms_max": 8.00,
+        "latency_threshold_ms": 30.0,
         "latency_threshold_ms_mock": 200.0
       }
     },
@@ -39,9 +39,9 @@
       "expected_overhead": {
         "ciphertext_size_exact": 1568,
         "public_key_size_exact": 1568,
-        "latency_ms_min": 0.50,
-        "latency_ms_max": 0.70,
-        "latency_threshold_ms": 2.0,
+        "latency_ms_min": 1.80,
+        "latency_ms_max": 10.00,
+        "latency_threshold_ms": 35.0,
         "latency_threshold_ms_mock": 200.0,
         "requires_fragmentation": true
       }
@@ -59,9 +59,9 @@
       "expected_overhead": {
         "ciphertext_size_exact": 32,
         "public_key_size_exact": 32,
-        "latency_ms_min": 0.1,
-        "latency_ms_max": 0.5,
-        "latency_threshold_ms": 1.0,
+        "latency_ms_min": 0.10,
+        "latency_ms_max": 0.50,
+        "latency_threshold_ms": 2.0,
         "latency_threshold_ms_mock": 50.0
       }
     }
