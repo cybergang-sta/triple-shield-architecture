@@ -80,7 +80,7 @@ class HandshakeLogger:
                 csv.writer(fh).writerow(row)
         _LOGGER.debug("Logged handshake #%d to %s", self._iteration, self.csv_path)
 
-    def log_from_metrics(self, metrics, anomaly_score: float, suite: Optional[str] = None, test_scenario: Optional[str] = None, latency_ns: int = 0):
+    def log_from_metrics(self, metrics, anomaly_score: float, suite: Optional[str] = None, test_scenario: Optional[str] = None, latency_ns: int = 0, anomaly_threshold: float = 0.5):
         """Convenience wrapper that derives label and anomaly_type from context.
 
         Parameters
@@ -95,11 +95,15 @@ class HandshakeLogger:
             If a ``--test-scenario`` was injected, this is its name.
         latency_ns : int
             High-resolution nanosecond timing (from ``time.perf_counter_ns``).
+        anomaly_threshold : float
+            Suite-specific threshold from policy.json (e.g. 0.6 for ML-KEM-768).
+            Labels are derived using this threshold, not a flat 0.5, so that
+            training labels match the agility controller's decision boundary.
         """
         suite_name = suite or getattr(metrics, "suite", "unknown") or "unknown"
 
-        # Derive label from anomaly score (>0.5 = anomalous)
-        label = 1 if anomaly_score > 0.5 else 0
+        # Derive label from anomaly score using suite-specific threshold
+        label = 1 if anomaly_score > anomaly_threshold else 0
 
         # Derive anomaly_type
         if test_scenario and test_scenario != "normal":

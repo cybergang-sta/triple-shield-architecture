@@ -86,17 +86,17 @@ def apply_test_scenario(metrics: HandshakeMetrics, scenario: Optional[str] = Non
 
     scenario = scenario.lower()
     if scenario == "high_latency":
-        metrics.latency_ms = 18.5
+        metrics.latency_ms = 50.0
         metrics.success = True
     elif scenario == "size_mismatch":
         metrics.ciphertext_size = 1208
         metrics.public_key_size = 1264
         metrics.success = True
     elif scenario == "failure":
-        metrics.latency_ms = 22.0
+        metrics.latency_ms = 45.0
         metrics.success = False
     elif scenario == "repeated_failure":
-        metrics.latency_ms = 20.0
+        metrics.latency_ms = 40.0
         metrics.success = False
 
     return metrics
@@ -216,12 +216,17 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     # 6. PERSIST HANDSHAKE DATA
     hs_logger = get_handshake_logger(dataset_output)
     if hs_logger is not None:
+        # Look up suite-specific anomaly threshold from policy for label derivation
+        suite_def = controller.get_suite_definition(session.current_suite)
+        suite_anomaly_threshold = suite_def.get("anomaly_threshold", 0.6) if suite_def else 0.6
+
         hs_logger.log_from_metrics(
             metrics,
             anomaly_score,
             suite=session.current_suite,
             test_scenario=test_scenario,
             latency_ns=elapsed_ns,
+            anomaly_threshold=suite_anomaly_threshold,
         )
         print(f"[Dataset] Logged handshake data -> {hs_logger.csv_path}")
 

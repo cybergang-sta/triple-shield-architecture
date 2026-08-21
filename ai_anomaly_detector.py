@@ -297,16 +297,22 @@ class AnomalyDetector:
                     _LOGGER.warning("Latency exceeds threshold for %s: %.2fms > %.2fms (severe anomaly)",
                                  metrics.suite, metrics.latency_ms, latency_threshold)
 
-                # If sizes match and latency is within threshold, reduce anomaly score
-                if size_match and latency_ok:
+                # Success validation: Failed handshake (implicit rejection) is always anomalous
+                success_ok = metrics.success
+                if not success_ok:
+                    _LOGGER.warning("Handshake failed for %s (implicit rejection) - triggering immediate anomaly",
+                                 metrics.suite)
+
+                # If sizes match, latency is within threshold, and handshake succeeded, reduce anomaly score
+                if size_match and latency_ok and success_ok:
                     # Reduce anomaly score by 50% if within expected parameters
                     adjusted_prob = anomaly_prob * 0.5
                     _LOGGER.debug("Suite-aware adjustment: %.3f -> %.3f (exact sizes and latency OK for %s)",
                                  anomaly_prob, adjusted_prob, metrics.suite)
                     return adjusted_prob
                 else:
-                    # Size mismatch or latency threshold exceeded - return high anomaly score
-                    _LOGGER.warning("Metrics violate exact size or latency threshold for %s - triggering immediate anomaly",
+                    # Size mismatch, latency threshold exceeded, or handshake failed
+                    _LOGGER.warning("Metrics violate size/latency/success threshold for %s - triggering immediate anomaly",
                                  metrics.suite)
                     return 1.0
 
