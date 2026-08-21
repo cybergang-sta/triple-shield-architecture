@@ -158,6 +158,83 @@ class AnomalyDetector:
         _LOGGER.info("Generated %d normal and %d anomalous samples", int(n_samples * 0.7), int(n_samples * 0.3))
         return df, np.array(labels)
 
+    def retrain_from_live_data(self, csv_path: str, min_samples: int = 10, mix_synthetic_ratio: float = 0.3) -> bool:
+        """Retrain the classifier using live handshake data from CSV.
+
+        Args:
+            csv_path: Path to live handshake log CSV.
+            min_samples: Minimum rows required before retraining.
+            mix_synthetic_ratio: Fraction of synthetic data to mix in for
+                generalization (0.0 = live only, 0.5 = 50/50 mix).
+
+        Returns:
+            True if retrained successfully, False otherwise.
+        """
+        import os
+
+        if not os.path.isfile(csv_path):
+            _LOGGER.debug("Live data CSV not found: %s", csv_path)
+            return False
+
+        try:
+            live_df = pd.read_csv(csv_path)
+        except Exception as e:
+            _LOGGER.warning("Failed to read live data CSV: %s", e)
+            return False
+
+        if len(live_df) < min_samples:
+            _LOGGER.debug("Not enough live samples for retrain: %d < %d", len(live_df), min_samples)
+            return False
+
+        feature_columns = ["latency_ms", "ciphertext_size", "public_key_size", "success", "encap_variance"]
+        missing = [c for c in feature_columns + ["label"] if c not in live_df.columns]
+        if missing:
+            _LOGGER.warning("Live CSV missing columns: %s", missing)
+            return False
+
+        live_features = live_df[feature_columns]
+        live_labels = live_df["label"].values
+
+        n_normal = int((live_labels == 0).sum())
+        n_anomalous = int((live_labels == 1).sum())
+        _LOGGER.info("Retraining from live data: %d samples (%d normal, %d anomalous)",
+                     len(live_df), n_normal, n_anomalous)
+
+        # Mix in synthetic data for generalization if requested
+        if mix_synthetic_ratio > 0:
+            n_synth = max(int(len(live_df) * mix_synthetic_ratio), 20)
+            synth_df, synth_labels = self.generate_synthetic_training_data(n_samples=n_synth)
+            live_features = pd.concat([live_features, synth_df], ignore_index=True)
+            live_labels = np.concatenate([live_labels, synth_labels])
+            _LOGGER.info("Mixed in %d synthetic samples (ratio %.0f%%)", n_synth, mix_synthetic_ratio * 100)
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            live_features, live_labels, test_size=0.2, random_state=42
+        )
+
+        old_f1 = None
+        if self.classifier is not None and self.is_trained:
+            try:
+                old_pred = self.classifier.predict(X_test)
+                old_f1 = f1_score(y_test, old_pred)
+            except Exception:
+                pass
+
+        self.classifier = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=10)
+        self.classifier.fit(X_train, y_train)
+
+        y_pred = self.classifier.predict(X_test)
+        new_f1 = f1_score(y_test, y_pred)
+        self.is_trained = True
+
+        if old_f1 is not None:
+            delta = new_f1 - old_f1
+            _LOGGER.info("Retrain complete. F1: %.3f -> %.3f (delta: %+.3f)", old_f1, new_f1, delta)
+        else:
+            _LOGGER.info("Retrain complete. F1 on test set: %.3f", new_f1)
+
+        return True
+
     def train(self, feature_df: Optional[pd.DataFrame] = None, labels: Optional[np.ndarray] = None, csv_path: Optional[str] = None):
         """Train the classifier on provided data, CSV file, or generate synthetic data if not provided."""
         if csv_path:

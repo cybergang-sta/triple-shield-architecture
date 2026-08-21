@@ -225,6 +225,10 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
         )
         print(f"[Dataset] Logged handshake data -> {hs_logger.csv_path}")
 
+        # Periodically retrain the anomaly detector on accumulated live data
+        if dataset_output:
+            detector.retrain_from_live_data(dataset_output)
+
     # Broadcast metrics to web dashboard if enabled
     if web_dashboard:
         metrics_data = {
