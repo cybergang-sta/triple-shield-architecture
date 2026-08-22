@@ -38,7 +38,7 @@ class HandshakeLogger:
     def __init__(self, csv_path: str):
         self.csv_path = csv_path
         self._lock = threading.Lock()
-        self._iteration = 0
+        self._iteration = self._count_existing_rows()
         self._ensure_file()
 
     def _ensure_file(self):
@@ -49,6 +49,16 @@ class HandshakeLogger:
                 with open(self.csv_path, "w", newline="", encoding="utf-8") as fh:
                     csv.writer(fh).writerow(CSV_HEADER)
             _LOGGER.info("Created handshake log: %s", self.csv_path)
+
+    def _count_existing_rows(self) -> int:
+        """Count existing data rows in the CSV (excluding header)."""
+        if not os.path.isfile(self.csv_path):
+            return 0
+        try:
+            with open(self.csv_path, "r", encoding="utf-8") as fh:
+                return max(0, sum(1 for _ in fh) - 1)
+        except Exception:
+            return 0
 
     def log(
         self,
