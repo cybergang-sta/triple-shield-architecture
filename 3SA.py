@@ -118,7 +118,8 @@ def hybrid_fusion_handshake(kem_algorithm: str, force_real: bool = False, sessio
     detector = get_detector()
     controller = get_controller()
     if not detector.is_trained:
-        initialize_detector()
+        if not detector.load_model():
+            initialize_detector()
     # Load suite overhead ranges for suite-aware anomaly detection
     detector.load_suite_overhead_ranges()
     detector.set_backend_mode(real=force_real)
