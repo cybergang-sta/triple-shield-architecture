@@ -236,7 +236,9 @@ class AnomalyDetector:
             synth_df, synth_labels = self.generate_synthetic_training_data(n_samples=n_synth)
             live_features = pd.concat([live_features, synth_df], ignore_index=True)
             live_labels = np.concatenate([live_labels, synth_labels])
-            _LOGGER.info("Mixed in %d synthetic samples (ratio %.0f%%)", n_synth, mix_synthetic_ratio * 100)
+            _LOGGER.info("Mixed in %d synthetic samples (ratio %.0f%%) latencies: %s",
+                         n_synth, mix_synthetic_ratio * 100,
+                         synth_df["latency_ms"].describe().to_dict())
 
         X_train, X_test, y_train, y_test = train_test_split(
             live_features, live_labels, test_size=0.2, random_state=42
