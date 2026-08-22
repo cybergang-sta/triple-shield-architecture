@@ -21,7 +21,7 @@ from ai_anomaly_detector import initialize_detector, get_detector, HandshakeMetr
 from agility_controller import initialize_controller, get_controller, AgilityEvent
 from handshake_logger import HandshakeLogger
 
-CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "live_handshake_log.csv")
+CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "live", "live_handshake_log.csv")
 
 
 def fuse(s1, s2):

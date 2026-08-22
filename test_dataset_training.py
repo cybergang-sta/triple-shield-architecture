@@ -19,7 +19,7 @@ def main():
     detector.load_suite_overhead_ranges()
     
     # Train with CSV dataset
-    csv_path = "datasets/handshake_dataset.csv"
+    csv_path = "datasets/synthetic/handshake_dataset.csv"
     _LOGGER.info(f"Training with dataset from {csv_path}")
     detector.train(csv_path=csv_path)
     

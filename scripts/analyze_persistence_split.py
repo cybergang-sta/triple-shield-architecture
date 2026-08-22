@@ -10,7 +10,7 @@ Usage:
 import csv
 import os
 
-CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "live_handshake_log.csv")
+CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "live", "live_handshake_log.csv")
 
 
 def main():

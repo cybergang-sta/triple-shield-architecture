@@ -351,16 +351,18 @@ def main():
     
     # Export dataset
     generator.export_dataset("handshake_dataset.csv")
-    
-    # Export statistics
-    generator.export_statistics("dataset_statistics.json")
-    
+
+    # Export statistics to metadata directory
+    stats_path = Path("datasets/metadata/dataset_statistics.json")
+    stats_path.parent.mkdir(parents=True, exist_ok=True)
+    generator.export_statistics(str(stats_path))
+
     # Print summary
     generator.print_summary()
-    
+
     _LOGGER.info("\n=== Dataset Generation Complete ===")
-    _LOGGER.info("Files saved to datasets/ directory")
-    _LOGGER.info("Use handshake_dataset.csv for training ai_anomaly_detector.py")
+    _LOGGER.info("Dataset saved to datasets/synthetic/handshake_dataset.csv")
+    _LOGGER.info("Statistics saved to datasets/metadata/dataset_statistics.json")
 
 
 if __name__ == "__main__":

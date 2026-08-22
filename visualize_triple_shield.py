@@ -14,7 +14,7 @@ from datetime import datetime
 # -----------------------------------------------------------------------------
 # CONFIGURATION
 # -----------------------------------------------------------------------------
-LOG_FILE = "triple_shield_agility_logs.csv"
+LOG_FILE = "datasets/metadata/triple_shield_agility_logs.csv"
 OUTPUT_DIR = "figures"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

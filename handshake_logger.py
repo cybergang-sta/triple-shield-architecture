@@ -2,7 +2,7 @@
 
 Appends structured CSV rows after each handshake so that real (and mock)
 runs accumulate into a training dataset.  The column layout matches the
-existing ``datasets/handshake_dataset.csv`` produced by
+existing ``datasets/synthetic/handshake_dataset.csv`` produced by
 ``generate_dataset.py`` so the file can be fed directly into
 ``AnomalyDetector.load_training_data_from_csv()``.
 """

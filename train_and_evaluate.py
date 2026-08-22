@@ -25,7 +25,7 @@ def main():
     detector.load_suite_overhead_ranges()
     
     # Load dataset
-    csv_path = "datasets/handshake_dataset.csv"
+    csv_path = "datasets/synthetic/handshake_dataset.csv"
     _LOGGER.info(f"Loading dataset from {csv_path}")
     
     df = pd.read_csv(csv_path)
@@ -101,7 +101,7 @@ def main():
         "test_samples": int(len(X_test))
     }
     
-    output_path = Path("datasets/training_results.json")
+    output_path = Path("datasets/metadata/training_results.json")
     with open(output_path, "w") as f:
         json.dump(results, f, indent=2)
     _LOGGER.info(f"\nResults saved to {output_path}")

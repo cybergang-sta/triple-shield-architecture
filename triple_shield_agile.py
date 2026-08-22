@@ -36,7 +36,7 @@ CRYPTO_SUITES = {
 }
 
 # CSV log for empirical data collection (research reproducibility)
-LOG_FILE = "triple_shield_agility_logs.csv"
+LOG_FILE = "datasets/metadata/triple_shield_agility_logs.csv"
 with open(LOG_FILE, "w", newline="") as f:
     writer = csv.writer(f)
     writer.writerow(["timestamp", "session_id", "threat_score", "selected_suite", "latency_ms", "key_match"])

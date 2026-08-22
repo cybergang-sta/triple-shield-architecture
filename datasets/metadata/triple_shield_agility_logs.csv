@@ -1,0 +1,6 @@
+timestamp,session_id,threat_score,selected_suite,latency_ms,key_match
+2026-08-21T01:28:15.281279,1,0.33,baseline,68.31,True
+2026-08-21T01:28:15.291089,2,0.166,elevated,8.95,True
+2026-08-21T01:28:15.298534,3,0.171,elevated,6.37,True
+2026-08-21T01:28:15.307065,4,0.188,hardened,7.68,True
+2026-08-21T01:28:15.310047,5,0.185,hardened,2.25,True

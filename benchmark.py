@@ -280,7 +280,7 @@ This indicates that the integration of post-quantum cryptography
 """
         return report
 
-    def export_detailed_logs(self, filename: str = "benchmark_detailed_logs.json") -> None:
+    def export_detailed_logs(self, filename: str = "datasets/metadata/benchmark_detailed_logs.json") -> None:
         """Export detailed logs to JSON file for analysis."""
         if not self.detailed_logs:
             _LOGGER.warning("No detailed logs to export")

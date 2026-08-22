@@ -1,0 +1,3 @@
+iteration,suite,latency_ms,latency_ns,ciphertext_size,public_key_size,success,encap_variance,label,anomaly_type
+1,TLS_X25519_Kyber512_WITH_AES_256_GCM_SHA3_256,78.30839999951422,78309900,768,800,True,0.0,1,anomaly_detected
+1,TLS_X25519_Kyber512_WITH_AES_256_GCM_SHA3_256,76.75190000009025,76754300,768,800,True,0.0,1,anomaly_detected

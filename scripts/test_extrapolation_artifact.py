@@ -15,7 +15,7 @@ os.environ["OQS_INSTALL_PATH"] = r"C:\liboqs"
 
 from ai_anomaly_detector import get_detector, HandshakeMetrics
 
-CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "live_handshake_log.csv")
+CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "live", "live_handshake_log.csv")
 SUITE = "TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256"
 
 

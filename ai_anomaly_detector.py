@@ -97,7 +97,7 @@ class AnomalyDetector:
         except Exception as e:
             _LOGGER.warning("Failed to load overhead ranges from policy: %s", e)
 
-    DEFAULT_MODEL_PATH = os.path.join(os.path.dirname(__file__), "datasets", "trained_model.joblib")
+    DEFAULT_MODEL_PATH = os.path.join(os.path.dirname(__file__), "datasets", "model", "trained_model.joblib")
 
     def save_model(self, path: Optional[str] = None) -> bool:
         """Persist the fitted classifier to disk via joblib."""
