@@ -27,11 +27,12 @@ _LOGGER = logging.getLogger("benchmark")
 class PerformanceBenchmark:
     """Benchmark harness for cryptographic operations with high-resolution logging."""
 
-    def __init__(self, iterations: int = 100, log_detailed: bool = True):
+    def __init__(self, iterations: int = 100, log_detailed: bool = True, force_real: bool = False):
         self.iterations = iterations
         self.results = []
         self.log_detailed = log_detailed
         self.detailed_logs = []
+        self.force_real = force_real
 
     def benchmark_x25519_only(self) -> Dict[str, float]:
         """Benchmark classical X25519-only ECDH with high-resolution logging."""
@@ -115,7 +116,7 @@ class PerformanceBenchmark:
 
             # Alice generates ML-KEM-768 keypair
             start_ns = time.perf_counter_ns()
-            alice_kem = create_kem("ML-KEM-768", force_real=False)
+            alice_kem = create_kem("ML-KEM-768", force_real=self.force_real)
             alice_pub_pq = alice_kem.generate_keypair()
             alice_kem_keygen_ns = time.perf_counter_ns() - start_ns
             iteration_log["public_key_size_bytes"] = len(alice_pub_pq)
@@ -137,7 +138,7 @@ class PerformanceBenchmark:
 
             # Bob performs KEM encapsulation
             start_ns = time.perf_counter_ns()
-            bob_kem = create_kem("ML-KEM-768", force_real=False)
+            bob_kem = create_kem("ML-KEM-768", force_real=self.force_real)
             ciphertext, shared_pq = bob_kem.encapsulate(alice_pub_pq)
             bob_encap_ns = time.perf_counter_ns() - start_ns
             iteration_log["ciphertext_size_bytes"] = len(ciphertext)
@@ -227,25 +228,19 @@ class PerformanceBenchmark:
 
         return df, overhead_pct
 
-    def generate_detailed_report(self) -> str:
+    def generate_detailed_report(self, df, overhead_pct) -> str:
         """Generate a detailed performance report with operation-level metrics."""
-        df, overhead_pct = self.run_comparison()
+        backend_label = "real liboqs" if self.force_real else "mock KEM (for testing)"
 
         # Calculate operation-level statistics for hybrid
         hybrid_logs = [log for log in self.detailed_logs if log["configuration"] == "X25519-ML-KEM-768"]
-        if hybrid_logs:
-            encap_times = [log["bob_encap_ns"] for log in hybrid_logs]
-            decap_times = [log["alice_decap_ns"] for log in hybrid_logs]
-            hkdf_times = [log["hkdf_ns"] for log in hybrid_logs]
-            pk_sizes = [log["public_key_size_bytes"] for log in hybrid_logs]
-            ct_sizes = [log["ciphertext_size_bytes"] for log in hybrid_logs]
 
         report = f"""
 === Triple Shield Architecture (3SA) Performance Report ===
 
 Test Parameters:
 - Iterations per configuration: {self.iterations}
-- Backend: {'real oqs' if False else 'mock KEM (for testing)'}
+- Backend: {backend_label}
 - High-Resolution Logging: {'enabled' if self.log_detailed else 'disabled'}
 
 Results:
@@ -258,6 +253,12 @@ Performance Analysis:
 
 """
         if hybrid_logs:
+            encap_times = [log["bob_encap_ns"] for log in hybrid_logs]
+            decap_times = [log["alice_decap_ns"] for log in hybrid_logs]
+            hkdf_times = [log["hkdf_ns"] for log in hybrid_logs]
+            pk_sizes = [log["public_key_size_bytes"] for log in hybrid_logs]
+            ct_sizes = [log["ciphertext_size_bytes"] for log in hybrid_logs]
+
             report += f"""
 Operation-Level Metrics (Hybrid):
 - ML-KEM Encapsulation: {np.mean(encap_times) / 1_000_000:.3f} ms (mean)
@@ -291,19 +292,42 @@ This indicates that the integration of post-quantum cryptography
         _LOGGER.info("Detailed logs exported to %s", filename)
 
 
-def run_benchmark(iterations: int = 100, log_detailed: bool = True) -> Tuple[pd.DataFrame, float, str]:
-    """Run the full benchmark suite with high-resolution logging."""
+def run_benchmark(iterations: int = 100, log_detailed: bool = True, force_real: bool = False) -> Tuple[pd.DataFrame, float, str]:
+    """Run the full benchmark suite with high-resolution logging.
+
+    Args:
+        force_real: If True, benchmark the real liboqs backend instead of
+            the mock KEM. Requires liboqs-python to be installed and
+            importable (see oqs_middleware.oqs_available()).
+    """
     logging.basicConfig(level=logging.INFO, format="[benchmark] %(levelname)s: %(message)s")
-    benchmark = PerformanceBenchmark(iterations=iterations, log_detailed=log_detailed)
+    benchmark = PerformanceBenchmark(iterations=iterations, log_detailed=log_detailed, force_real=force_real)
     df, overhead_pct = benchmark.run_comparison()
-    report = benchmark.generate_detailed_report()
+    report = benchmark.generate_detailed_report(df, overhead_pct)
     
     if log_detailed:
-        benchmark.export_detailed_logs()
+        filename = "datasets/metadata/benchmark_detailed_logs_real.json" if force_real else "datasets/metadata/benchmark_detailed_logs.json"
+        benchmark.export_detailed_logs(filename=filename)
     
     return df, overhead_pct, report
 
 
 if __name__ == "__main__":
-    df, overhead_pct, report = run_benchmark(iterations=50, log_detailed=True)
+    import argparse
+
+    parser = argparse.ArgumentParser(description="3SA performance benchmark: mock vs. real liboqs backend")
+    parser.add_argument(
+        "--force-real",
+        action="store_true",
+        help="Benchmark the real liboqs backend instead of the mock KEM (requires liboqs-python installed)",
+    )
+    parser.add_argument(
+        "--iterations",
+        type=int,
+        default=50,
+        help="Iterations per configuration (default: 50, matching the original mock-backend run)",
+    )
+    args = parser.parse_args()
+
+    df, overhead_pct, report = run_benchmark(iterations=args.iterations, log_detailed=True, force_real=args.force_real)
     print(report)
