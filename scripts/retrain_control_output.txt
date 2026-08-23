@@ -1,0 +1,290 @@
+﻿python : C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: 
+X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+At line:1 char:77
++ ... C:\liboqs"; python "C:\Users\WUNNAM\Triple-Shield Architecture\script ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\WUNNAM...h feature names:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 36.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 37.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 38.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 39.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 40.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 41.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 42.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 43.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 44.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 45.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 46.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 47.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 48.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 36.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 37.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 38.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 39.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 40.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 41.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 42.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 43.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 44.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 45.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 46.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 47.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+C:\Users\WUNNAM\AppData\Roaming\Python\Python313\site-packages\sklearn\utils\validation.py:2827: UserWarning: X does 
+not have valid feature names, but RandomForestClassifier was fitted with feature names
+  warnings.warn(
+Latency exceeds threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256: 48.00ms > 30.00ms (severe anomaly)
+Metrics violate size/latency/success threshold for TLS_X25519_ML_KEM_768_WITH_AES_256_GCM_SHA3_256 - triggering 
+immediate anomaly
+BASELINE (loaded from disk)
+----------------------------------------
+  36.0ms  raw=0.0000
+  37.0ms  raw=0.0000
+  38.0ms  raw=0.0000
+  39.0ms  raw=0.0100
+  40.0ms  raw=0.0200
+  41.0ms  raw=0.0200
+  42.0ms  raw=0.0800
+  43.0ms  raw=0.0800
+  44.0ms  raw=0.0800
+  45.0ms  raw=0.2300
+  46.0ms  raw=0.2300
+  47.0ms  raw=0.2300
+  48.0ms  raw=0.6100
+
+
+AFTER RETRAIN (same CSV, no seed rows)
+----------------------------------------
+  36.0ms  raw=0.0000
+  37.0ms  raw=0.0000
+  38.0ms  raw=0.0200
+  39.0ms  raw=0.1400
+  40.0ms  raw=0.6500
+  41.0ms  raw=0.6500
+  42.0ms  raw=0.6500
+  43.0ms  raw=0.6500
+  44.0ms  raw=0.6500
+  45.0ms  raw=0.6500
+  46.0ms  raw=0.8700
+  47.0ms  raw=0.8700
+  48.0ms  raw=0.8700
+
+COMPARISON (synthetic-noise-only control)
+------------------------------------------------------------
+Latency  Before       After        Changed?
+------------------------------------------------------------
+36.0     0.0000       0.0000       
+37.0     0.0000       0.0000       
+38.0     0.0000       0.0200       YES
+39.0     0.0100       0.1400       YES
+40.0     0.0200       0.6500       YES
+41.0     0.0200       0.6500       YES
+42.0     0.0800       0.6500       YES
+43.0     0.0800       0.6500       YES
+44.0     0.0800       0.6500       YES
+45.0     0.2300       0.6500       YES
+46.0     0.2300       0.8700       YES
+47.0     0.2300       0.8700       YES
+48.0     0.6100       0.8700       YES
